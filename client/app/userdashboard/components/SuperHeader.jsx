@@ -54,9 +54,9 @@ const SuperHeader = () => {
 
   //==============================notification logic=====================
   const [loader,setLoader] = useState(0)
-  setInterval(() => {
-    setLoader(()=> loader+1 )
-  },15 * 1000);
+  // setInterval(() => {
+  //   setLoader(()=> loader+1 )
+  // },15 * 1000);
   const [notificationList, setNotificationList] = useState(null);
   useEffect(() => {
     const handleNotification = async () => {
