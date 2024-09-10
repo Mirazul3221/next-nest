@@ -8,7 +8,7 @@ export let MYONLINEFRIEND = [];
 export const SocketInvocation = () => {
   const { store } = useContext(storeContext)
   useEffect(() => {
-    const socket = io('wss://hhhptl.vercel.app',{query : {
+    const socket = io('ws://localhost:3221/',{query : {
       userId : store.userInfo.id
       }})
       SOCKET.ROOT = socket

@@ -30,7 +30,7 @@ export class NotificationsGateway
   }
 
 
-///////////////////////////////////////////////Collect All Online Users Data///////////////////////////////////////////
+///////////////////////////////////////////////Collect All Online Users Data/////////////////////////////////////////
   private onlineUsers = []
    connectedUsesrs =async (socketId,userId) =>{
        const isExist = await this.onlineUsers.some((u)=>u.userId === userId);
