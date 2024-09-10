@@ -25,7 +25,7 @@ import RadarChart from "../components/RaderChart";
 import AvatarWrapper from "../components/profileWrapper";
 import { GoHistory } from "react-icons/go";
 import { FaFacebook } from "react-icons/fa";
-import { SocketInvocation } from "../components/SocketInvocation";
+import { MYONLINEFRIEND} from "../components/SocketInvocation";
 const Page = () => {
   // SocketInvocation(4356786)
   const [loader, setLoader] = useState(false);
@@ -315,6 +315,9 @@ const Page = () => {
       console.log(error);
     }
   };
+
+
+  console.log(MYONLINEFRIEND)
   return (
     <ProtectRoute>
       <div className="md:px-10 px-4 mb-2 md:min-h-[91vh] duration-300 relative">
@@ -753,7 +756,7 @@ const Page = () => {
                     className="mt-4 bg-gray-100 p-4 rounded-lg border"
                   >
                     <div className="relative rounded-full bg-black w-fit mx-auto">
-                      {item?.isOnline ? (
+                      { MYONLINEFRIEND.some(O=> O === item._id) ? (
                         <div className="w-5 h-5 border-2 border-white bg-green-500 absolute rounded-full right-10 bottom-1"></div>
                       ) : (
                         <div className="w-5 h-5 border-2 border-white bg-gray-400 absolute rounded-full right-10 bottom-1"></div>
@@ -782,7 +785,7 @@ const Page = () => {
                           View Details
                         </h2>
                       </Link>
-                      {item?.isOnline && (
+                      { MYONLINEFRIEND.some(O=> O === item._id) && (
                         <h2
                           onClick={() => {
                             inviteYourFriend(item._id);

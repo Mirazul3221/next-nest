@@ -33,6 +33,7 @@ const SuperHeader = () => {
           },
         });
         setMe({
+          id:data._id,
           isOnline: data.isOnline,
           name: data.name,
           profile: data.profile,
@@ -353,7 +354,7 @@ const SuperHeader = () => {
           <div className="group relative duration-100">
             {me.profile.length > 0 ? (
               <div className="relative">
-                <Profile profile={me.profile} isOnline={me.isOnline} />{" "}
+                <Profile profile={me.profile} myId={me.id}/>
                 {me.balance === 0 ? (
                   <h2 className="text-center flex justify-center items-center gap-1">
                     0.00 <span className="font-bold text-[12px]">৳</span>{" "}

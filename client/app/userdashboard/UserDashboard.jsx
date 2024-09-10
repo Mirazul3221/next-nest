@@ -24,7 +24,6 @@ import Test from "./components/Test";
 import { MdOutlineMenuBook } from "react-icons/md";
 import Search from "../components/Search";
 import SuperHeader from "./components/SuperHeader";
-import { SOCKET, SocketInvocation } from "./components/SocketInvocation";
 // import Image from "next/image";
 // import logo from "@/public/bcs-logo.png"
 // import { TextEditor } from './components/TextEditor';
@@ -81,7 +80,6 @@ const UserDashboard = () => {
   }, []);
   return (
     <ProtectRoute>
-      <SocketInvocation/>
       {/* <Script
         type="text/javascript"
         src="//pl23641250.highrevenuenetwork.com/9d/dd/06/9ddd062e14b034f4d6043be8bf0a1f91.js"

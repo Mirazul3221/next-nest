@@ -5,7 +5,7 @@ import { NotificationModule } from "src/notification/notification.module";
 import { FriendRequestModule } from "src/friend-request/friend-request.module";
 
 @Module({
-    imports:[AuthModule,NotificationModule,FriendRequestModule],
+    imports:[NotificationModule,FriendRequestModule],
     providers:[
         NotificationsGateway
     ]
