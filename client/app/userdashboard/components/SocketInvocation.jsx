@@ -8,11 +8,14 @@ export let MYONLINEFRIEND = [];
 export const SocketInvocation = () => {
   const { store } = useContext(storeContext)
   useEffect(() => {
-    const socket = io('ws://localhost:3221/',{query : {
+    const socket = io(`${baseurl}`,{query : {
       userId : store.userInfo.id
       }})
       SOCKET.ROOT = socket
-
+     socket.emit("alert-message","user is trying to connect my server....")
+     socket.on('send-msg',m=>{
+      alert(m)
+     })
       socket.on("onlineFriends",((data)=>{
         data.map(u=> MYONLINEFRIEND.push(u))
       }))

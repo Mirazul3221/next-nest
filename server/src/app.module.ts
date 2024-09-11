@@ -12,9 +12,9 @@ import { MyProfileModule } from './userprofile/myprofile.module';
 import { SavequestionsModule } from './savequestions/savequestions.module';
 import { AllquestionscollectionModule } from './allquestionscollection/allquestionscollection.module';
 import { FriendRequestModule } from './friend-request/friend-request.module';
-import { GatewayModule } from './websocket-gateway/gateway.module';
 import { NotificationModule } from './notification/notification.module';
 import { MessangerModule } from './messanger/messanger.module';
+import { SocketServerModule } from './socket-server/socket-server.module';
 
 @Module({
   imports: [
@@ -34,12 +34,12 @@ import { MessangerModule } from './messanger/messanger.module';
     SavequestionsModule,
     AllquestionscollectionModule,
     FriendRequestModule,
-    GatewayModule,
     NotificationModule,
-    MessangerModule
+    MessangerModule,
+    SocketServerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {}//
 //
