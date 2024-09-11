@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useReducer } from 'react'
 import { dataReducer } from './dataReducer'
 import storeContext from './createContex'
 import { decode_token } from './extract_jwt'
@@ -14,7 +14,7 @@ const DataProvider = ({children}) => {
         token : localstoreToken.token,
         searchReasultFromGeneralUser: '',
         searchReasultFromAuthenticUser: '',
-
+        incomingMessage:[]
        })
   return (
     <div>

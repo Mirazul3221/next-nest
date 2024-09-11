@@ -1,6 +1,6 @@
 import { decode_token } from "./extract_jwt";
 export const dataReducer = (state,action) => {
- //user authentication function
+ //user authentication function 
  const {type,paylod} = action;
  if (type == "login_success") {
     state.userInfo = decode_token(paylod.token),
@@ -13,7 +13,6 @@ export const dataReducer = (state,action) => {
       localStorage.removeItem('token')
     }
  }
-console.log(paylod)
 //============================
  if (type === "ALL") {
    state.questionData = action.payload;
@@ -35,6 +34,10 @@ console.log(paylod)
  //===================================
  if (type === "authenticUserSearch") {
    state.searchReasultFromAuthenticUser = paylod.searchReasultFromAuthenticUser
+ }
+
+ if (type === "INCOMINGMESSAGE") {
+    state.incomingMessage.push(paylod.incomingMessage)
  }
  return state
 }

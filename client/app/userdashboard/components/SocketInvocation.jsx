@@ -7,8 +7,11 @@ export let SOCKET = {};
 export let MYONLINEFRIEND = [];
 export const SocketInvocation = () => {
   const { store } = useContext(storeContext)
+  let mysocketUrl = 'https://edu-socket.onrender.com';
+  mysocketUrl = 'http://localhost:3001'
+
   useEffect(() => {
-    const socket = io('https://edu-socket.onrender.com',{query : {
+    const socket = io(mysocketUrl,{query : {
       userId : store.userInfo.id
       }})
       SOCKET.ROOT = socket

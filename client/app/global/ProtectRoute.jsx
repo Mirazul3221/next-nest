@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { SocketInvocation } from "../userdashboard/components/SocketInvocation";
 import { useContext } from "react";
 import storeContext from "./createContex";
+import { useEffect } from "react";
 const ProtectRoute = ({children}) => {
   const { store } = useContext(storeContext)
   const router = useRouter();
@@ -12,7 +13,9 @@ const ProtectRoute = ({children}) => {
         {children}
         </div>  
     } else {
-      router.push("/login")
+     useEffect(() => {
+      router.push("/login")//
+     }, []);
     }
 }
 

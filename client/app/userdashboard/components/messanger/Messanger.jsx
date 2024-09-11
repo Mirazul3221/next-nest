@@ -27,12 +27,13 @@ const Messanger = ({
   const [message, setMessage] = useState("");
   const [myAndFriendMessage, setMyAndFriendMessage] = useState();
   const [currentMessage, setCurrentMessage] = useState([]);
-  const [myFriendCurrentMessage,setMyFriendCurrentMessage] = useState([])
   const [leftHide, setLeftHide] = useState(false);
   const [loader, setLoader] = useState(false);
   const messangerRef = useRef(null);
   const { store } = useContext(storeContext);
   const bottomRef = useRef(null);
+
+  let myFriendCurrentMessags = [];
   const scrollToBottom = () => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -54,7 +55,7 @@ const Messanger = ({
         scrollToBottom();
       }, 500 * 1);
     }
-  }, [loader, leftHide,myFriendCurrentMessage]);
+  }, [loader, leftHide]);
 
   const handleMessage = (event) => {
     setMessage(event.target.value);
@@ -73,16 +74,25 @@ const Messanger = ({
     }
 
     fetchMessage();
-  }, [loader,myFriendCurrentMessage]);
+  }, [loader]);
 
-  useEffect(async() => {
-   await SOCKET?.ROOT?.on("get-message-from-my-friend",( data=>{
-     setMyFriendCurrentMessage(prev=>[...prev,data])
-    }))
+  useEffect(() => {
+   const fetchData = async ()=>{
+    await SOCKET?.ROOT?.on("get-message-from-my-friend",( data=>{
+      myFriendCurrentMessags = []
+          console.log(data)
+      }))
+      fetchData()
+   }
+   return () => {
+    fetchData()
+  };
   }, []);
 
-
-  console.log(myFriendCurrentMessage)
+  let a = ['am','jam','kola','kathal','lichu'];
+  let b = ['golap','hasnahena','joba']
+  let c = [a,b]
+  console.log(c)
   return (
     <div
       className={`${
