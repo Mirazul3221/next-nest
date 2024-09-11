@@ -8,7 +8,7 @@ export let MYONLINEFRIEND = [];
 export const SocketInvocation = () => {
   const { store } = useContext(storeContext)
   useEffect(() => {
-    const socket = io(`${baseurl}`,{query : {
+    const socket = io(`wss//edu-socket.onrender.com`,{query : {
       userId : store.userInfo.id
       }})
       SOCKET.ROOT = socket

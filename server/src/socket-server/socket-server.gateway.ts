@@ -8,6 +8,7 @@ import { Socket } from 'socket.io';
   cors : {
     allowedHeaders: '*',
     origin: "*",
+    methods: ["GET", "POST"],
     credentials: true,
   }
 })
