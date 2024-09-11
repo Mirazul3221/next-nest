@@ -50,12 +50,21 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
 
   useEffect(async () => {
     await sendMessageToMyFriend();
+    return ()=>{
+      sendMessageToMyFriend();
+    }
   }, []);
 
   useEffect(() => {
+  const fetchData = async ()=>{
     SOCKET?.ROOT?.on("get-message-from-my-friend",(data=>{
       console.log(data)
     }))
+  }
+  fetchData()//
+    return ()=>{
+      fetchData()
+    }
   }, []);
   return (
     <div className="my-message py-2">

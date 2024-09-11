@@ -6,13 +6,16 @@ import storeContext from "./createContex";
 const ProtectRoute = ({children}) => {
   const { store } = useContext(storeContext)
   const router = useRouter();
+  const protectRoute = ()=>{
+    router.push("/login")
+  }
     if (store?.userInfo?.id) {
       return <div>
         <SocketInvocation/>
         {children}
         </div>  
     } else {
-      router.push("/login")
+      protectRoute()
     }
 }
 
