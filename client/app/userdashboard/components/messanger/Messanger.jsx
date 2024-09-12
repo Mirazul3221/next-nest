@@ -75,17 +75,15 @@ const Messanger = ({
     fetchMessage();
   }, [loader]);
 
-  useEffect(() => {
-   const fetchData = async ()=>{
+
+  const fetchData = async ()=>{
     await socketConnection ?.on("get-message-from-my-friend",( data=>{
       myFriendCurrentMessags = [...myFriendCurrentMessags,data]
       console.log(data)
       }))
    }
+  useEffect(() => {
    fetchData()
-   return () => {
-    fetchData()
-  };
   }, []);
 
   let a = ['am','jam','kola','kathal','lichu'];

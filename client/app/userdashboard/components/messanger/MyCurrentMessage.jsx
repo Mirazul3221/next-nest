@@ -47,11 +47,8 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
     }
   };
 
-  useEffect(async () => {
-    await sendMessageToMyFriend();
-    return ()=>{
-      sendMessageToMyFriend();
-    }
+  useEffect(() => {
+    sendMessageToMyFriend();
   }, []);
 
   // useEffect(() => {
