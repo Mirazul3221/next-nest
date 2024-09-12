@@ -5,10 +5,9 @@ import axios from "axios";
 import HTMLReactParser from "html-react-parser";
 import React, { useContext, useState } from "react";
 import { useEffect } from "react";
-import { SOCKET } from "../SocketInvocation";
 
 const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, msg, bottomRef}) => {
-  const { store } = useContext(storeContext);
+  const { store ,socketConnection } = useContext(storeContext);
   const [msgStatus, setMsgStatus] = useState("sending...");
   const [loader, setLoader] = useState(false);
   const sendMessageToMyFriend = async () => {
@@ -39,7 +38,7 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
           },
         }
       );
-    await SOCKET?.ROOT?.emit('send-message-to-my-friend',{receiverId,msg})
+    socketConnection?.emit('send-message-to-my-friend',{receiverId,msg})
       setMsgStatus("send");
       setLoader(false);
     } catch (error) {
@@ -55,17 +54,17 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
     }
   }, []);
 
-  useEffect(() => {
-  const fetchData = async ()=>{
-    SOCKET?.ROOT?.on("get-message-from-my-friend",(data=>{
-      console.log(data)
-    }))
-  }
-  fetchData()//
-    return ()=>{
-      fetchData()
-    }
-  }, []);
+  // useEffect(() => {
+  // const fetchData = async ()=>{
+  //   SOCKET?.ROOT?.on("get-message-from-my-friend",(data=>{
+  //     console.log(data)
+  //   }))
+  // }
+  // fetchData()//
+  //   return ()=>{
+  //     fetchData()
+  //   }
+  // }, []);
   return (
     <div className="my-message py-2">
       <div className="w-full">

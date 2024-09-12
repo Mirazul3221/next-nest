@@ -13,7 +13,6 @@ import "@/app/userdashboard/components/cssfiles/scrolling_bar.css";
 import Image from "next/image";
 import MyCurrentMessage from "./MyCurrentMessage";
 import HTMLReactParser from "html-react-parser";
-import { SOCKET } from "../SocketInvocation";
 const Messanger = ({
   id,
   name,
@@ -30,7 +29,7 @@ const Messanger = ({
   const [leftHide, setLeftHide] = useState(false);
   const [loader, setLoader] = useState(false);
   const messangerRef = useRef(null);
-  const { store } = useContext(storeContext);
+  const { store, socketConnection } = useContext(storeContext);
   const bottomRef = useRef(null);
 
   let myFriendCurrentMessags = [];
@@ -76,18 +75,18 @@ const Messanger = ({
     fetchMessage();
   }, [loader]);
 
-  useEffect(() => {
-   const fetchData = async ()=>{
-    await SOCKET?.ROOT?.on("get-message-from-my-friend",( data=>{
-      myFriendCurrentMessags = []
-          console.log(data)
-      }))
-      fetchData()
-   }
-   return () => {
-    fetchData()
-  };
-  }, []);
+  // useEffect(() => {
+  //  const fetchData = async ()=>{
+  //   await socketConnection ?.on("get-message-from-my-friend",( data=>{
+  //     myFriendCurrentMessags = []
+  //         console.log(data)
+  //     }))
+  //     fetchData()
+  //  }
+  //  return () => {
+  //   fetchData()
+  // };
+  // }, []);
 
   let a = ['am','jam','kola','kathal','lichu'];
   let b = ['golap','hasnahena','joba']

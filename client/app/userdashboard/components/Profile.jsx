@@ -1,8 +1,6 @@
+import { MYONLINEFRIEND } from '@/app/global/ProtectRoute'
 import React from 'react'
-import { MYONLINEFRIEND } from './SocketInvocation'
-
 const Profile = ({profile,myId}) => {
-  
   const isOnline =  MYONLINEFRIEND?.some(O=> O === myId)
   return (
     <div className='relative'>

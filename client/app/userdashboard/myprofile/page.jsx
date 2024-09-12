@@ -6,7 +6,7 @@ import storeContext from "@/app/global/createContex";
 import { PiPenLight } from "react-icons/pi";
 import { baseurl, viewurl } from "@/app/config";
 import Logo from "@/app/components/Logo";
-import ProtectRoute from "@/app/global/ProtectRoute";
+import ProtectRoute, { MYONLINEFRIEND } from "@/app/global/ProtectRoute";
 import Link from "next/link";
 import { CgProfile } from "react-icons/cg";
 import { LuUser2 } from "react-icons/lu";
@@ -25,7 +25,6 @@ import RadarChart from "../components/RaderChart";
 import AvatarWrapper from "../components/profileWrapper";
 import { GoHistory } from "react-icons/go";
 import { FaFacebook } from "react-icons/fa";
-import { MYONLINEFRIEND} from "../components/SocketInvocation";
 const Page = () => {
   // SocketInvocation(4356786)
   const [loader, setLoader] = useState(false);
@@ -316,8 +315,6 @@ const Page = () => {
     }
   };
 
-
-  console.log(MYONLINEFRIEND)
   return (
     <ProtectRoute>
       <div className="md:px-10 px-4 mb-2 md:min-h-[91vh] duration-300 relative">

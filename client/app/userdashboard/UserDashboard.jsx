@@ -3,37 +3,28 @@ import React, { useContext, useEffect, useState } from "react";
 import ProtectRoute from "../global/ProtectRoute";
 import Link from "next/link";
 import storeContext from "../global/createContex";
-import Navbar from "./components/Navbar";
-// import Monitor from "./components/generalcontroller/Monitor";
-import Logo from "../components/Logo";
 import Layout from "./components/Layout";
-import Profile from "./components/Profile";
-import { useRouter } from "next/navigation";
-import { RiLogoutCircleRLine, RiNotification3Line } from "react-icons/ri";
 import { IoHomeOutline } from "react-icons/io5";
 import { CgProfile } from "react-icons/cg";
 import { AiOutlineHeart } from "react-icons/ai";
 import { GoHistory } from "react-icons/go";
 import { Banner, BannerMobile } from "../adsterra/Banner";
-import Script from "next/script";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { baseurl } from "../config";
-import BcsLayout from "./components/BcsLayout";
 import Test from "./components/Test";
-import { MdOutlineMenuBook } from "react-icons/md";
-import Search from "../components/Search";
+
 import SuperHeader from "./components/SuperHeader";
 // import Image from "next/image";
 // import logo from "@/public/bcs-logo.png"
 // import { TextEditor } from './components/TextEditor';
+
 const UserDashboard = () => {
   const [me, setMe] = useState({
     name: "",
     profile: "",
   });
-
-  const { store } = useContext(storeContext);
+  const { store} = useContext(storeContext);
   // socket.on('connect',()=>{
   //   console.log("connected to the user id")
   // })

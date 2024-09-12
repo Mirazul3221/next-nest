@@ -1,17 +1,19 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { SocketInvocation } from "../userdashboard/components/SocketInvocation";
 import { useContext } from "react";
 import storeContext from "./createContex";
+export const MYONLINEFRIEND = []
 const ProtectRoute = ({children}) => {
-  const { store } = useContext(storeContext)
+  const { store ,socketConnection } = useContext(storeContext)
+  socketConnection?.on("onlineFriends",((data)=>{
+    data.map(u=> MYONLINEFRIEND.push(u))
+  }))
   const router = useRouter();
   const protectRoute = ()=>{
     router.push("/login")
   }
     if (store?.userInfo?.id) {
       return <div>
-        <SocketInvocation/>
         {children}
         </div>  
     } else {
