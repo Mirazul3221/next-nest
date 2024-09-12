@@ -29,10 +29,6 @@ const invockSocketServer = async() => {
 }
        useEffect(() => {
         invockSocketServer()
-        
-        return () => {
-          invockSocketServer()
-        };
       }, []);
 
   return (

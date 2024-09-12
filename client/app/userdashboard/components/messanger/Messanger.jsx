@@ -75,23 +75,24 @@ const Messanger = ({
     fetchMessage();
   }, [loader]);
 
-  // useEffect(() => {
-  //  const fetchData = async ()=>{
-  //   await socketConnection ?.on("get-message-from-my-friend",( data=>{
-  //     myFriendCurrentMessags = []
-  //         console.log(data)
-  //     }))
-  //     fetchData()
-  //  }
-  //  return () => {
-  //   fetchData()
-  // };
-  // }, []);
+  useEffect(() => {
+   const fetchData = async ()=>{
+    await socketConnection ?.on("get-message-from-my-friend",( data=>{
+      myFriendCurrentMessags = [...myFriendCurrentMessags,data]
+      console.log(data)
+      }))
+   }
+   fetchData()
+   return () => {
+    fetchData()
+  };
+  }, []);
 
   let a = ['am','jam','kola','kathal','lichu'];
   let b = ['golap','hasnahena','joba']
   let c = [a,b]
   console.log(c)
+  console.log(socketConnection)
   return (
     <div
       className={`${
