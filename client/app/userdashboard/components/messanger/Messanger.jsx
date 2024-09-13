@@ -54,7 +54,7 @@ const Messanger = ({
         scrollToBottom();
       }, 500 * 1);
     }
-  }, [loader, leftHide]);
+  }, [loader, leftHide,storeMessage]);
 
   const handleMessage = (event) => {
     setMessage(event.target.value);
@@ -79,6 +79,7 @@ const Messanger = ({
   const fetchData = async ()=>{
     await socketConnection ?.on("get-message-from-my-friend",( data=>{
       setStoreMessage(data)
+      setCurrentMessage([])
       }))
    }
   useEffect(() => {
@@ -91,7 +92,6 @@ const Messanger = ({
   let a = ['am','jam','kola','kathal','lichu'];
   let b = ['golap','hasnahena','joba']
   let c = [a,b]
-  console.log(c)
   console.log(storeMessage)
   return (
     <div

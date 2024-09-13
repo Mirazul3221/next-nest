@@ -10,7 +10,7 @@ import { useEffect } from "react";
 const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, msg, bottomRef}) => {
   const { store ,socketConnection } = useContext(storeContext);
   const [msgStatus, setMsgStatus] = useState("sending...");
-  const [checkOnline,setCheckOnline] = useState(false)
+  const [checkOnline,setCheckOnline] = useState('')
   const [loader, setLoader] = useState(false);
   const sendMessageToMyFriend = async () => {
     try {
@@ -41,6 +41,7 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
         }
       );
    await socketConnection?.emit('send-message-to-my-friend',{receiverId,msg})
+   await socketConnection.on('hoga',data => console.log(data))
       setMsgStatus("send");
       setLoader(false);
     } catch (error) {
@@ -58,19 +59,9 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
   }, []);
 
   const isOnline =  MYONLINEFRIEND?.some(O=> O === receiverId)
-
-  useEffect(() => {
-  const fetchData = async ()=>{
-  await  socketConnection?.on("hoga",(data=>{
-    console.log(data)
-    setCheckOnline(true)
-    }))
-  }
-  fetchData()//
-  }, []);
-  console.log('sdvfbnsd;oilkl jjkttttttttttttttttt')
+  console.log('sdvfbnsd;oilkl jjkttttttttttttttttt',checkOnline)
   return (
-    <div className={`my-message py-2 ${checkOnline ? "hidden" : ""}`}>
+    <div className={`my-message py-2`}>
       <div className="w-full">
         <div className="w-full flex justify-end">
           <div
