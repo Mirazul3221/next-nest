@@ -8,7 +8,7 @@ import axios from "axios";
 import { baseurl } from "../config";
 export let MYONLINEFRIEND = [];
 const DataProvider = ({ children }) => {
-  let mysocketUrl = "https://edu-socket.vercel.app";
+  let mysocketUrl = "https://edu-socket.onrender.com";
   // mysocketUrl = "http://localhost:3001";
 
   const [socketConnection, setSocketConnection] = useState(null);
