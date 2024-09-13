@@ -8,9 +8,7 @@ import { HiOutlineFaceFrown } from "react-icons/hi2";
 import { IoHeartSharp, IoImageOutline } from "react-icons/io5";
 import { RiSendPlaneLine } from "react-icons/ri";
 import { RxCross1 } from "react-icons/rx";
-import loader_gif from "@/public/loader.gif";
 import "@/app/userdashboard/components/cssfiles/scrolling_bar.css";
-import Image from "next/image";
 import MyCurrentMessage from "./MyCurrentMessage";
 import HTMLReactParser from "html-react-parser";
 const Messanger = ({
@@ -26,9 +24,9 @@ const Messanger = ({
   const [message, setMessage] = useState("");
   const [myAndFriendMessage, setMyAndFriendMessage] = useState();
   const [currentMessage, setCurrentMessage] = useState([]);
-  const [storeMessage,setStoreMessage] = useState([]);
+  const [storeMessage, setStoreMessage] = useState([]);
+  const [onlineUser,setOnlineUser] = useState(false)
   const [leftHide, setLeftHide] = useState(false);
-  const [loader, setLoader] = useState(false);
   const messangerRef = useRef(null);
   const { store, socketConnection } = useContext(storeContext);
   const bottomRef = useRef(null);
@@ -48,13 +46,10 @@ const Messanger = ({
   }, [message]);
 
   useEffect(() => {
-    scrollToBottom();
-    for (let i = 0; i < 10; i++) {
-      setTimeout(() => {
-        scrollToBottom();
-      }, 500 * 1);
-    }
-  }, [loader, leftHide,storeMessage]);
+    setTimeout(() => {
+      scrollToBottom();
+    }, 1000);
+  }, [leftHide,storeMessage]);
 
   const handleMessage = (event) => {
     setMessage(event.target.value);
@@ -73,26 +68,19 @@ const Messanger = ({
     }
 
     fetchMessage();
-  }, [loader,storeMessage]);
+  }, [storeMessage]);
 
-
-  const fetchData = async ()=>{
-    await socketConnection ?.on("get-message-from-my-friend",( data=>{
-      setStoreMessage(data)
-      setCurrentMessage([])
-      }))
-   }
+  const fetchData = async () => {
+    await socketConnection?.on("get-message-from-my-friend", (data) => {
+      setStoreMessage(data);
+      setOnlineUser(true)
+    });
+  };
   useEffect(() => {
-   fetchData()
-   return ()=>{
-    fetchData()
-   }
+    fetchData();
   }, []);
-
-  let a = ['am','jam','kola','kathal','lichu'];
-  let b = ['golap','hasnahena','joba']
-  let c = [a,b]
-  console.log(storeMessage)
+console.log(storeMessage)
+console.log(onlineUser)
   return (
     <div
       className={`${
@@ -156,25 +144,25 @@ const Messanger = ({
                     </div>
                   </div>
                 ) : (
-                 <div key={i}>
-                  <div className="friend-message py-2 relative mb-6">
-                    <div className="image-box absolute -bottom-6">
-                      <img
-                        className="w-8 h-8 rounded-full border border-fuchsia-500"
-                        src={profile}
-                        alt={name}
-                      />
-                    </div>
-                    <div
-                      style={{ borderRadius: "20px 20px 20px 0px" }}
-                      className="px-2 ml-6 bg-fuchsia-500 max-w-[80%] w-fit text-white text-left"
-                    >
-                      <p ref={bottomRef} className="px-4 py-1">
-                        {HTMLReactParser(m.message)}
-                      </p>
+                  <div key={i}>
+                    <div className="friend-message py-2 relative mb-6">
+                      <div className="image-box absolute -bottom-6">
+                        <img
+                          className="w-8 h-8 rounded-full border border-fuchsia-500"
+                          src={profile}
+                          alt={name}
+                        />
+                      </div>
+                      <div
+                        style={{ borderRadius: "20px 20px 20px 0px" }}
+                        className="px-2 ml-6 bg-fuchsia-500 max-w-[80%] w-fit text-white text-left"
+                      >
+                        <p ref={bottomRef} className="px-4 py-1">
+                          {HTMLReactParser(m.message)}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                 </div>
                 );
               })}
             </div>
@@ -186,6 +174,7 @@ const Messanger = ({
                 return (
                   <MyCurrentMessage
                     key={i}
+                    onlineUser={onlineUser}
                     receiverId={id}
                     receiverName={name}
                     profile={profile}
@@ -193,7 +182,6 @@ const Messanger = ({
                     status={status}
                     desc={desc}
                     msg={m}
-                    bottomRef={bottomRef}
                   />
                 );
               })}
@@ -237,25 +225,18 @@ const Messanger = ({
             />
             {message ? (
               <span>
-                {loader ? (
-                  <Image
-                    className="w-5 h-5 mb-[9px]"
-                    src={loader_gif}
-                    alt="Loading"
-                  />
-                ) : (
-                  <RiSendPlaneLine
-                    className="cursor-pointer"
-                    onClick={() => {
-                      // sendMessageToMyFriend();
-                      setCurrentMessage((prev) => [...prev, message]);
-                      setLeftHide(false);
-                      setMessage("");
-                    }}
-                    size={25}
-                    color="violet"
-                  />
-                )}
+                <RiSendPlaneLine
+                  className="cursor-pointer"
+                  onClick={() => {
+                    // sendMessageToMyFriend();
+                    setCurrentMessage((prev) => [...prev, message]);
+                    setLeftHide(false);
+                    setMessage("");
+                    setOnlineUser(false)
+                  }}
+                  size={25}
+                  color="violet"
+                />
               </span>
             ) : (
               <span
