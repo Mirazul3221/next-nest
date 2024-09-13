@@ -26,13 +26,13 @@ const Messanger = ({
   const [message, setMessage] = useState("");
   const [myAndFriendMessage, setMyAndFriendMessage] = useState();
   const [currentMessage, setCurrentMessage] = useState([]);
+  const [storeMessage,setStoreMessage] = useState([]);
   const [leftHide, setLeftHide] = useState(false);
   const [loader, setLoader] = useState(false);
   const messangerRef = useRef(null);
   const { store, socketConnection } = useContext(storeContext);
   const bottomRef = useRef(null);
 
-  let myFriendCurrentMessags = [];
   const scrollToBottom = () => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: "smooth" });
@@ -73,24 +73,26 @@ const Messanger = ({
     }
 
     fetchMessage();
-  }, [loader]);
+  }, [loader,storeMessage]);
 
 
   const fetchData = async ()=>{
     await socketConnection ?.on("get-message-from-my-friend",( data=>{
-      myFriendCurrentMessags = [...myFriendCurrentMessags,data]
-      console.log(data)
+      setStoreMessage(data)
       }))
    }
   useEffect(() => {
    fetchData()
+   return ()=>{
+    fetchData()
+   }
   }, []);
 
   let a = ['am','jam','kola','kathal','lichu'];
   let b = ['golap','hasnahena','joba']
   let c = [a,b]
   console.log(c)
-  console.log(socketConnection)
+  console.log(storeMessage)
   return (
     <div
       className={`${
@@ -154,7 +156,8 @@ const Messanger = ({
                     </div>
                   </div>
                 ) : (
-                     <div key={i} className="friend-message py-2 relative mb-6">
+                 <div key={i}>
+                  <div className="friend-message py-2 relative mb-6">
                     <div className="image-box absolute -bottom-6">
                       <img
                         className="w-8 h-8 rounded-full border border-fuchsia-500"
@@ -171,6 +174,7 @@ const Messanger = ({
                       </p>
                     </div>
                   </div>
+                 </div>
                 );
               })}
             </div>

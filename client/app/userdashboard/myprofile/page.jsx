@@ -38,7 +38,7 @@ const Page = () => {
   const [openMOdel, setOpenModel] = useState(false);
   // const isBrowser = typeof window !== undefined;
   const [percentage, setPercentage] = useState(0);
-  const { store } = useContext(storeContext);
+  const { store , socketConnection } = useContext(storeContext);
   useEffect(() => {
     async function fetchData() {
       try {
@@ -101,7 +101,6 @@ const Page = () => {
   };
 
   ///===============Update Status===============
-
   const updateUserTitle = async () => {
     try {
       await axios.post(
@@ -193,7 +192,6 @@ const Page = () => {
   const fileLength = Math.floor(bytesToKB(preview.length || 1) + 3);
 
   //=======================================================
-
   const [resize, setResize] = useState(0);
   useEffect(() => {
     const r = window.innerWidth;
@@ -218,6 +216,7 @@ const Page = () => {
   }, []);
   const [getAllPendingFriend, setGetAllPendingFriend] = useState(null);
   const [getAllAcceptedFriend, setGetAllAcceptedFriend] = useState(null);
+  ///////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     async function getAllFriends() {
       try {

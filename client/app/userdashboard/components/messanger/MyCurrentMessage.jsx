@@ -1,6 +1,7 @@
 "use client";
 import { baseurl } from "@/app/config";
 import storeContext from "@/app/global/createContex";
+import { MYONLINEFRIEND } from "@/app/global/ProtectRoute";
 import axios from "axios";
 import HTMLReactParser from "html-react-parser";
 import React, { useContext, useState } from "react";
@@ -9,6 +10,7 @@ import { useEffect } from "react";
 const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, msg, bottomRef}) => {
   const { store ,socketConnection } = useContext(storeContext);
   const [msgStatus, setMsgStatus] = useState("sending...");
+  const [checkOnline,setCheckOnline] = useState(false)
   const [loader, setLoader] = useState(false);
   const sendMessageToMyFriend = async () => {
     try {
@@ -38,7 +40,7 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
           },
         }
       );
-    socketConnection?.emit('send-message-to-my-friend',{receiverId,msg})
+   await socketConnection?.emit('send-message-to-my-friend',{receiverId,msg})
       setMsgStatus("send");
       setLoader(false);
     } catch (error) {
@@ -48,22 +50,27 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
   };
 
   useEffect(() => {
+    socketConnection
     sendMessageToMyFriend();
+    return ()=>{
+      sendMessageToMyFriend();
+     }
   }, []);
 
-  // useEffect(() => {
-  // const fetchData = async ()=>{
-  //   SOCKET?.ROOT?.on("get-message-from-my-friend",(data=>{
-  //     console.log(data)
-  //   }))
-  // }
-  // fetchData()//
-  //   return ()=>{
-  //     fetchData()
-  //   }
-  // }, []);
+  const isOnline =  MYONLINEFRIEND?.some(O=> O === receiverId)
+
+  useEffect(() => {
+  const fetchData = async ()=>{
+  await  socketConnection?.on("hoga",(data=>{
+    console.log(data)
+    setCheckOnline(true)
+    }))
+  }
+  fetchData()//
+  }, []);
+  console.log('sdvfbnsd;oilkl jjkttttttttttttttttt')
   return (
-    <div className="my-message py-2">
+    <div className={`my-message py-2 ${checkOnline ? "hidden" : ""}`}>
       <div className="w-full">
         <div className="w-full flex justify-end">
           <div
@@ -73,8 +80,8 @@ const MyCurrentMessage = ({ receiverId,receiverName,profile,title,status,desc, m
             {HTMLReactParser(msg)}
           </div>
         </div>
-        <p ref={bottomRef} className="text-[8px] text-right">
-          {msgStatus}
+        <p ref={bottomRef} className={`text-[8px] text-right`}>
+          {msgStatus} {isOnline ? "online" : "ofline"}
         </p>
       </div>
     </div>
