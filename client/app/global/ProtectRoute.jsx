@@ -6,6 +6,7 @@ import { invokeSocket } from "./socketInvocation";
 export const MYONLINEFRIEND = []
 const ProtectRoute = ({children}) => {
   const { store } = useContext(storeContext)
+  const router = useRouter()
   useEffect(() => {
     const socket = invokeSocket()
     socket.emit("myUserInfo",{id:store.userInfo.id,name:store.userInfo.name})
@@ -13,7 +14,7 @@ const ProtectRoute = ({children}) => {
       socket.disconnect()
     };
   }, []);
-  const protectRoute = ()=>{
+  const protectRouter = ()=>{
     router.push("/login")
   }
     if (store?.userInfo?.id) {
@@ -21,7 +22,7 @@ const ProtectRoute = ({children}) => {
         {children}
         </div>  
     } else {
-      protectRoute()
+      protectRouter()
     }
 }
 
