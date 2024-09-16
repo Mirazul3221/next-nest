@@ -306,11 +306,11 @@ console.log(currentMessage)
         </div>
         <div className={`${hideImoji ? "scale-1" : "scale-0"} duration-150 origin-bottom-left absolute w-[340px] px-4 py-2 left-12 bottom-20 bg-gray-100 shadow-md rounded-md grid grid-cols-7`}>
                 {
-                  imoji.map(i=>{
+                  imoji.map((imo,i)=>{
                     return (
-                      <h4 onClick={(e)=>{
-                        setMessage(message + i)
-                      }} className="cursor-pointer hover:bg-white rounded-md hover:shadow-md duration-150 m-1 flex justify-center items-center">{i}</h4>
+                      <h4 key={i} onClick={(e)=>{
+                        setMessage(message + imo)
+                      }} className="cursor-pointer hover:bg-white rounded-md hover:shadow-md duration-150 m-1 flex justify-center items-center">{imo}</h4>
                     )
                   })
                 }
