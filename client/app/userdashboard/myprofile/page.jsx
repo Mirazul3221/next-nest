@@ -752,7 +752,7 @@ const Page = () => {
                     className="mt-4 bg-gray-100 p-4 rounded-lg border"
                   >
                     <div className="relative rounded-full bg-black w-fit mx-auto">
-                      { MYONLINEFRIEND.some(O=> O === item._id) ? (
+                      { MYONLINEFRIEND?.some(O=> O === item._id) ? (
                         <div className="w-5 h-5 border-2 border-white bg-green-500 absolute rounded-full right-10 bottom-1"></div>
                       ) : (
                         <div className="w-5 h-5 border-2 border-white bg-gray-400 absolute rounded-full right-10 bottom-1"></div>
@@ -774,14 +774,14 @@ const Page = () => {
                       >
                         Unfriend
                       </h2>
-                      <Link
+                      <a
                         href={`${viewurl}/userdashboard/searchusers/${item._id}`}
                       >
                         <h2 className="py-1 px-2 cursor-pointer bg-fuchsia-500 rounded-md text-white text-sm">
                           View Details
                         </h2>
-                      </Link>
-                      { MYONLINEFRIEND.some(O=> O === item._id) && (
+                      </a>
+                      { MYONLINEFRIEND?.some(O=> O === item._id) && (
                         <h2
                           onClick={() => {
                             inviteYourFriend(item._id);

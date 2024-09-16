@@ -11,6 +11,7 @@ import { RxCross1 } from "react-icons/rx";
 import "@/app/userdashboard/components/cssfiles/scrolling_bar.css";
 import MyCurrentMessage from "./MyCurrentMessage";
 import HTMLReactParser from "html-react-parser";
+import { invokeSocket } from "@/app/global/socketInvocation";
 const Messanger = ({
   id,
   name,
@@ -27,8 +28,10 @@ const Messanger = ({
   const [storeMessage, setStoreMessage] = useState([]);
   const [onlineUser,setOnlineUser] = useState(false)
   const [leftHide, setLeftHide] = useState(false);
+  const [typingMsg,setTypingMsg] = useState(null)
+  const [isOpenMyFriendMessangerWindow,setIsOpenMyFriendMessangerWindow] = useState(null)
   const messangerRef = useRef(null);
-  const { store, socketConnection } = useContext(storeContext);
+  const { store } = useContext(storeContext);
   const bottomRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -51,6 +54,10 @@ const Messanger = ({
     }, 1000);
   }, [leftHide,storeMessage]);
 
+  useEffect(() => {
+
+  }, []);
+
   const handleMessage = (event) => {
     setMessage(event.target.value);
   };
@@ -69,23 +76,64 @@ const Messanger = ({
 
     fetchMessage();
   }, [storeMessage]);
-
   const fetchData = async () => {
-    await socketConnection?.on("get-message-from-my-friend", (data) => {
+    const socket = invokeSocket()
+   if (switcher) {
+    await socket?.on("get-message-from-my-friend", (data) => {
       setStoreMessage(data);
       setOnlineUser(true)
     });
+    socket?.emit("typingMsg", {
+      senderId: store.userInfo.id,
+      receiverId: id,
+      message
+    });
+
+    socket?.on('getTypingMsg',(data)=>{
+      setTypingMsg(data)
+      console.log(data)
+    })
+   }
+    switcher ? socket?.emit("openMessageWindow",{receiverId:id,status:true}) : socket?.emit("openMessageWindow",{receiverId:id,status:false})
+    socket.on('getOpenMessageWindow',(data)=>{
+      console.log(isOpenMyFriendMessangerWindow)
+      setIsOpenMyFriendMessangerWindow(data)
+    })
+  //  alert(switcher ? "on" : 'of')
   };
   useEffect(() => {
     fetchData();
-  }, []);
-console.log(storeMessage)
-console.log(onlineUser)
+  }, [message,switcher]);
+  const [hideImoji,setHideImoji] = useState(false)
+  let imoji = ['😀','😌','🤐','👺','🤢','🙄','🤩','😍','🤑','😧','😀','😌',
+    '🤐','👺','🤢','🙄','🤩','😍','🤑','😧',
+  '😀','😌','🤐','👺','🤢','🙄','🤩','😍','🤑','😧',
+'😀','😌','🤐','👺','🤢','🙄','🤩','😍','🤑','😧',
+'😀','😌','🤐','👺','🤢','🙄','🤩','😍','🤑','😧']
+ const handleImuji = () =>{
+  setHideImoji(!hideImoji)
+ }
+
+if (isOpenMyFriendMessangerWindow) {
+   if (currentMessage?.length > 0) {
+    currentMessage[currentMessage.length - 1].hasSeen = true
+     if (currentMessage.length > 1) {
+      for (let i = 0; i < currentMessage?.length - 1; i++) {
+        currentMessage[i].hasSeen = false
+      }
+     }
+   }
+}
+// if (isOpenMyFriendMessangerWindow) {
+//     alert("my friend window open")
+// }
+
+console.log(currentMessage)
   return (
     <div
       className={`${
         switcher ? "scale-1" : "scale-0"
-      } fixed duration-200 -left-0 md:left-1/3 md:h-auto pb-4 bg-white h-screen origin-bottom-left bottom-0 md:bottom-10 w-full md:w-4/12 z-50 md:ml-6 border rounded-md`}
+      } fixed duration-200 -left-0 md:left-1/3 md:h-auto pb-4 bg-white origin-bottom-left bottom-0 md:bottom-10 w-full md:w-4/12 z-50 md:ml-6 border rounded-md`}
     >
       <div className="py-3 bg-fuchsia-500 rounded-t-md flex justify-between items-center px-4">
         <div className="flex gap-2">
@@ -165,6 +213,12 @@ console.log(onlineUser)
                   </div>
                 );
               })}
+
+            {
+              typingMsg && typingMsg.senderId === id && typingMsg.receiverId === store.userInfo.id && typingMsg.message !== '' && (
+                <p ref={bottomRef}>{typingMsg.message}</p>
+              )
+            }
             </div>
           )}
 
@@ -197,9 +251,9 @@ console.log(onlineUser)
             <label htmlFor="file">
               <IoImageOutline size={25} />
             </label>
-            <span>
+            <div className="cursor-pointer" onClick={handleImuji}>
               <HiOutlineFaceFrown size={25} />
-            </span>
+            </div>
           </div>
           <div className="media hidden">
             <input className="" id="file" type="file" />
@@ -229,7 +283,7 @@ console.log(onlineUser)
                   className="cursor-pointer"
                   onClick={() => {
                     // sendMessageToMyFriend();
-                    setCurrentMessage((prev) => [...prev, message]);
+                    setCurrentMessage((prev) => [...prev, {message,hasSeen:false}]);
                     setLeftHide(false);
                     setMessage("");
                     setOnlineUser(false)
@@ -245,11 +299,22 @@ console.log(onlineUser)
                 }}
                 className="mb-1 cursor-pointer"
               >
-                {<IoHeartSharp color="violet" size={25} />}
+                {<IoHeartSharp onClick={handleImuji} color="violet" size={25} />}
               </span>
             )}
           </div>
         </div>
+        <div className={`${hideImoji ? "scale-1" : "scale-0"} duration-150 origin-bottom-left absolute w-[340px] px-4 py-2 left-12 bottom-20 bg-gray-100 shadow-md rounded-md grid grid-cols-7`}>
+                {
+                  imoji.map(i=>{
+                    return (
+                      <h4 onClick={(e)=>{
+                        setMessage(message + i)
+                      }} className="cursor-pointer hover:bg-white rounded-md hover:shadow-md duration-150 m-1 flex justify-center items-center">{i}</h4>
+                    )
+                  })
+                }
+              </div>
       </div>
     </div>
   );

@@ -25,9 +25,6 @@ const UserDashboard = () => {
     profile: "",
   });
   const { store} = useContext(storeContext);
-  // socket.on('connect',()=>{
-  //   console.log("connected to the user id")
-  // })
 
   // useEffect(() => {
   //   async function fetchData() {
