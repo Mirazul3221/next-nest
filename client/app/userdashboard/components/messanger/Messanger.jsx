@@ -48,18 +48,20 @@ const Messanger = ({
     setInvoke(socket);
   }, []);
   useEffect(() => {
-    if (
-      (typingMsg?.message?.length % 20 === 0 &&
-        typingMsg?.message?.length > 0) ||
-      typingMsg?.message?.length === 1
-    ) {
-      new Audio("/notification-soun/keyboard-typing-139083.mp3").play();
-      setTypingLoading(true);
-      
-      setTimeout(() => {
-        setTypingLoading(false);
-      }, 8000);
-    }
+     if (switcher === true) {
+      if (
+        (typingMsg?.message?.length % 20 === 0 &&
+          typingMsg?.message?.length > 0) ||
+        typingMsg?.message?.length === 1
+      ) {
+        new Audio("/notification-soun/keyboard-typing-139083.mp3").play();
+        setTypingLoading(true);
+        
+        setTimeout(() => {
+          setTypingLoading(false);
+        }, 8000);
+      }
+     }
   }, [typingMsg]);
   useEffect(() => {
     // messangerRef.current.addEventListener("keyUp",()=>alert("helo"))
@@ -89,7 +91,7 @@ const Messanger = ({
         setMyAndFriendMessage(data);
       } catch (error) {}
     }
-    new Audio("/notification-soun/som_da_kiwify.mp3").play();
+    switcher &&  new Audio("/notification-soun/som_da_kiwify.mp3").play();
     fetchMessage();
   }, [storeMessage]);
   const fetchSocketData = async (socket) => {
@@ -264,7 +266,7 @@ const Messanger = ({
                       style={{ borderRadius: "20px 20px 0px 20px" }}
                       className="max-w-[80%] w-fit bg-slate-100"
                     >
-                      <p ref={bottomRef} className="text-right px-4 py-2">
+                      <p ref={bottomRef} className="text-right overflow-hidden px-4 py-2">
                         {HTMLReactParser(m.message)}
                       </p>
                     </div>
@@ -283,7 +285,7 @@ const Messanger = ({
                         style={{ borderRadius: "20px 20px 20px 0px" }}
                         className="px-2 ml-6 bg-fuchsia-500 max-w-[80%] w-fit text-white text-left"
                       >
-                        <p ref={bottomRef} className="px-4 py-1">
+                        <p ref={bottomRef} className="px-4 py-1 overflow-hidden">
                           {HTMLReactParser(m.message)}
                         </p>
                       </div>
@@ -299,6 +301,7 @@ const Messanger = ({
                 return (
                   <MyCurrentMessage
                     key={i}
+                    id={id}
                     currentMessage={currentMessage}
                     switcher={switcher}
                     onlineUser={onlineUser}

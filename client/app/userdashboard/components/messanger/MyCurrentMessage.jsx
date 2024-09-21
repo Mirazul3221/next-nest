@@ -9,29 +9,48 @@ import HTMLReactParser from "html-react-parser";
 import React, { useContext, useRef, useState } from "react";
 import { useEffect } from "react";
 
-const MyCurrentMessage = ({currentMessage,onlineUser, receiverId,receiverName,profile,title,status,desc, msg}) => {
+const MyCurrentMessage = ({
+  id,
+  currentMessage,
+  onlineUser,
+  receiverId,
+  receiverName,
+  profile,
+  title,
+  status,
+  desc,
+  msg,
+}) => {
   const { store } = useContext(storeContext);
-  const [msgStatus, setMsgStatus] = useState("sending...");
+  const [msgStatus, setMsgStatus] = useState('sending...');
   const [loader, setLoader] = useState(false);
-  const removeMsgRef = useRef(null)
+  const removeMsgRef = useRef(null);
+   const socket = invokeSocket();
+  ////////////////////////////This Function has been created for providing levele system//////////////////////////////////////
+  const setALevel = (stack, level) => {
+    stack[stack.length - 1].status = level;
+    for (let i = 0; i < stack.length - 1; i++) {
+      stack[i].status = false;
+    }
+  };
+  setALevel(currentMessage, true);
   const sendMessageToMyFriend = async () => {
-    const socket = invokeSocket()
-    const audio = new Audio('/notification-soun/1sec.mp3')
-    audio.play()
+    const audio = new Audio("/notification-soun/1sec.mp3");
+    audio.play();
     try {
       const urlPattern = /(https?:\/\/[^\s]+)/g; // Regex to detect links
       // Split the message and replace links with anchor tags
       const parts = msg.message.split(urlPattern).map((part, index) => {
         if (urlPattern.test(part)) {
-         const linkMsg = ` <a
+          const linkMsg = ` <a
               key="${index}"
               href="${part}"
               target="_blank"
               rel="noopener noreferrer"
             >
               ${part}
-            </a>`
-          msg.message = linkMsg
+            </a>`;
+          msg.message = linkMsg;
         }
       });
 
@@ -45,8 +64,13 @@ const MyCurrentMessage = ({currentMessage,onlineUser, receiverId,receiverName,pr
           },
         }
       );
-   await socket?.emit('send-message-to-my-friend',{receiverId,message:msg?.message})
+       await socket.emit("myUserInfo",{id:store.userInfo.id,name:store.userInfo.name})
+      await socket?.emit("send-message-to-my-friend", {
+        receiverId,
+        message: msg?.message,
+      });
       setMsgStatus("sent");
+   
       setLoader(false);
     } catch (error) {
       setLoader(false);
@@ -56,15 +80,28 @@ const MyCurrentMessage = ({currentMessage,onlineUser, receiverId,receiverName,pr
 
   useEffect(() => {
     sendMessageToMyFriend();
-    return ()=>{
+    return () => {
       sendMessageToMyFriend();
-     }
+    };
   }, []);
 
-  const isOnline =  MYONLINEFRIEND?.some(O=> O === receiverId)
+  if (msgStatus === "sent") {
+       if (msgStatus !== 'Delivered') {
+        setInterval(async() => {
+          await socket.emit('checkSenderOnlineStatus',id)
+         await socket.on('getSenderOnlineStatus',(online)=>{
+            online && setMsgStatus("Delivered")
+           })
+        }, 1000);
+       }
+    }
+
+  const isOnline = MYONLINEFRIEND?.some((O) => O === receiverId);
   if (onlineUser) {
-    removeMsgRef.current.remove()
+    removeMsgRef.current.remove();
   }
+
+  console.log(currentMessage);
   return (
     <div ref={removeMsgRef} className={`my-message py-2`}>
       <div className="w-full">
@@ -75,14 +112,18 @@ const MyCurrentMessage = ({currentMessage,onlineUser, receiverId,receiverName,pr
           >
             {HTMLReactParser(msg.message)}
           </div>
-          {
-              msg.hasSeen && (<img className="absolute w-4 -bottom-2 -right-1" src={profile} alt="profile" />)
-          }
-          {
-            msg.hasSeen !== true && (
-              <p className="text-[10px]">{msgStatus}</p>
-            )
-          }
+          {msg.hasSeen && (
+            <img
+              className="absolute w-4 -bottom-2 -right-1"
+              src={profile}
+              alt="profile"
+            />
+          )}
+          {msg.hasSeen !== true && (
+            <p className={`text-[8px] duration-150 absolute -bottom-3 ${msgStatus === "sending..." ? "text-rose-500" : msgStatus === "sent" ? "text-green-500" : 'text-fuchsia-500'}`}>
+              {msg?.status ? msgStatus : ""}
+            </p>
+          )}
         </div>
       </div>
     </div>
