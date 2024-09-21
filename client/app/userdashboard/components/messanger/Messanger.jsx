@@ -342,7 +342,7 @@ const Messanger = ({
                   style={{ borderRadius: "20px 20px 20px 0px" }}
                   className="px-2 ml-6 bg-gray-100 text-gray-300 max-w-[80%] w-fit text-left"
                 >
-                  <p ref={bottomRef} className="px-4 py-1">
+                  <p ref={bottomRef} className="px-4 py-1 blur-[1px]">
                     {typingMsg.message}
                   </p>
                 </div>
