@@ -121,6 +121,7 @@ const Messanger = ({
     //  alert(switcher ? "on" : 'of')
   };
   useEffect(() => {
+    socket.emit("myUserInfo",{id:store.userInfo.id,name:store.userInfo.name})
     fetchSocketData(invoke);
   }, [message, switcher]);
   useEffect(() => {

@@ -64,7 +64,6 @@ const MyCurrentMessage = ({
           },
         }
       );
-       await socket.emit("myUserInfo",{id:store.userInfo.id,name:store.userInfo.name})
       await socket?.emit("send-message-to-my-friend", {
         receiverId,
         message: msg?.message,
