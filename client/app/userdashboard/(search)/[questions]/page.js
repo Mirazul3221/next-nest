@@ -1,5 +1,4 @@
 "use client";
-import Header from "@/app/components/Header";
 import { baseurl } from "@/app/config";
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
@@ -26,7 +25,7 @@ const Page = () => {
       try {
         setLoader(true);
         const { data } = await axios.get(
-          `${baseurl}/allquestionscollection/api/search/${searchVal}`
+          `${baseurl}/allquestionscollection/api/search/${decodeURIComponent(searchVal)}`
         );
         setData(data);
         setLoader(false);
@@ -42,7 +41,7 @@ const Page = () => {
     try {
       setLoader(true);
       const { data } = await axios.get(
-        `${baseurl}/auth/publicuser/find/${searchVal}`
+        `${baseurl}/auth/publicuser/find/${decodeURIComponent(searchVal)}`
       );
       setData(data);
       setLoader(false);
@@ -56,7 +55,7 @@ const Page = () => {
     try {
       setLoader(true);
       const { data } = await axios.get(
-        `${baseurl}/allquestionscollection/api/search/${searchVal}`
+        `${baseurl}/allquestionscollection/api/search/${decodeURIComponent(searchVal)}`
       );
       setData(data);
       setLoader(false);
@@ -95,7 +94,7 @@ const Page = () => {
                 <h2 className="text-2xl text-gray-700 md:mb-4">
                   Result for
                   <span className="font-bold text-fuchsia-500">
-                    {" " + searchVal}
+                    {" " + decodeURIComponent(searchVal)}
                   </span>
                 </h2>
                 <h2 className="text-2xl text-gray-700 mb-4">

@@ -54,7 +54,7 @@ const Messanger = ({
           typingMsg?.message?.length > 0) ||
         typingMsg?.message?.length === 1
       ) {
-        new Audio("/notification-soun/keyboard-typing-139083.mp3").play();
+        new Audio("/notification-soun/oneplus_allay.mp3").play();
         setTypingLoading(true);
         
         setTimeout(() => {

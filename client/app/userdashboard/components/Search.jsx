@@ -20,7 +20,9 @@ const Search = () => {
         />
         {search.length > 0 ? (
             <div onClick={handleSearch} className="px-2 py-[6px] w-fit rounded-r-lg bg-fuchsia-500 border-2 text-white cursor-pointer duration-00 border-fuchsia-500 hover:border-fuchsia-600 hover:bg-fuchsia-600">
-              <FiSearch size={22} />
+              <a href={`/userdashboard/${search}`}>
+                <FiSearch size={22} />
+              </a>
             </div>
 
         ) : (
