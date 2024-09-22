@@ -50,7 +50,7 @@ const Messanger = ({
   useEffect(() => {
      if (switcher === true) {
       if (
-        (typingMsg?.message?.length % 20 === 0 &&
+        (typingMsg?.message?.length % 10 === 0 &&
           typingMsg?.message?.length > 0) ||
         typingMsg?.message?.length === 1
       ) {
