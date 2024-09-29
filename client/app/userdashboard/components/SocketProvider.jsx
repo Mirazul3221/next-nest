@@ -21,7 +21,6 @@ useEffect(() => {
         socketInstance.disconnect()
     };
 }, []);
-let bal = "gdfhbdfg"
 return (
     <div >
      <socketContext.Provider value={{bal}}>

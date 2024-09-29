@@ -2,6 +2,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import DataProvider from "./global/DataProvider";
 import Head from "next/head";
+import SocketProvider from "./userdashboard/global/SocketProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,9 @@ export default function RootLayout({ children }) {
       </Head>
       <body className={inter.className}>
          <DataProvider>
-         <div className="max-w-[1440px] mx-auto">{children}</div>
+           <SocketProvider>
+              <div className="max-w-[1440px] mx-auto">{children}</div>
+           </SocketProvider>
          </DataProvider>
         </body>
     </html>

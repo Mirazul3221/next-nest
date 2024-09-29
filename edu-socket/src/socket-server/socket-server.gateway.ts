@@ -52,7 +52,6 @@ export class NotificationsGateway
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         await this.connectedUsesrs(client.id, id);
         console.log(`User connected: ${id} and sid:${client.id}`);
-        console.log(this.onlineUsers);
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         client.on('checkSenderOnlineStatus',async (data) => {
           const isOnline =await this.onlineUsers.some((U) => (U.userId === data));

@@ -16,7 +16,6 @@ import { toast, ToastContainer } from "react-toastify";
 import SuperHeader from "../../components/SuperHeader";
 import Link from "next/link";
 import Messanger from "../../components/messanger/Messanger";
-import Effect from "./Effect";
 
 const Page = () => {
   const pram = useParams();
@@ -27,6 +26,7 @@ const Page = () => {
   const [acceptedFriendsId, setAcceptedFriendsId] = useState(null);
   const [loderReq, setLoaderReq] = useState(false);
   const [openMessangerBox, setOpenMessangerBox] = useState(false);
+  const [openMessangerBox1, setOpenMessangerBox1] = useState(false);
   const { store } = useContext(storeContext);
   useEffect(() => {
     const fetchUser = async () => {
@@ -125,13 +125,13 @@ const Page = () => {
     }
   }, []);
   ////////////////////////friend request api////////////////////////
-  const friendRequestApi = async () => {
+  const friendRequestApi = async (recipient) => {
     try {
       //   setLoader(true);
       setLoaderReq(true);
       const { data } = await axios.post(
         `${baseurl}/friend-request`,
-        { recipient: userDetails?._id },
+        { recipient },
         {
           headers: {
             Authorization: `Bearer ${store.token}`,
@@ -139,7 +139,7 @@ const Page = () => {
         }
       );
       setLoaderReq(false);
-      handleNotification();
+      handleNotification(recipient);
       // setAllQuestions(totalReadQuestions),
       console.log(data);
       //   setLoader(false);
@@ -159,11 +159,11 @@ const Page = () => {
   //   });
   // };
   ////////////////notification api////////////////////////
-  const handleNotification = async () => {
+  const handleNotification = async (recipient) => {
     try {
       const { data } = await axios.post(
         `${baseurl}/notification/create`,
-        { readerId: userDetails?._id, type: "friend-request" },
+        { readerId: recipient, type: "friend-request" },
         {
           headers: {
             Authorization: `Bearer ${store.token}`,
@@ -196,7 +196,7 @@ const Page = () => {
   //    );
   //    setSomeFriendProfileAndId(data)
   //   }
-
+  console.log(acceptedFriendsId);
   return (
     <ProtectRoute>
       {/* <div onClick={someFriendProfileAndIdd}>jsgdkgjsdkjgjkzdjis</div> */}
@@ -311,7 +311,7 @@ const Page = () => {
                                 <div>
                                   <div
                                     onClick={() => {
-                                      friendRequestApi();
+                                      friendRequestApi(userDetails?._id);
                                     }}
                                     className="bg-fuchsia-500 cursor-pointer text-white rounded-md w-fit px-2 mt-1 flex gap-[3px] items-center"
                                   >
@@ -357,10 +357,10 @@ const Page = () => {
                         name={userDetails.name}
                         profile={userDetails.profile}
                         title={userDetails.title}
-                        status = {userDetails.status}
-                        desc ={userDetails.description}
+                        status={userDetails.status}
+                        desc={userDetails.description}
                         switcher={openMessangerBox}
-                        setSwitcher ={setOpenMessangerBox}
+                        setSwitcher={setOpenMessangerBox}
                       />
                     </div>
                   ) : (
@@ -452,49 +452,81 @@ const Page = () => {
           </div>
         </div>
         <div className="grid md:grid-cols-4 gap-5 px-10 pb-5">
-          {someOfMyFriendDetails?.map((item, i) => {
-            return (
-              <div key={i} className="bg-gray-50">
-                <div key={i} className="mt-4 bg-gray-100 p-4 rounded-lg border">
-                  <div className="relative rounded-full bg-black w-fit mx-auto">
-                    {item?.isOnline ? (
-                      <div className="w-5 h-5 border-4 border-white bg-green-500 absolute rounded-full right-10 bottom-1"></div>
-                    ) : (
-                      <div className="w-5 h-5 border-4 border-white bg-[#e7523a] absolute rounded-full right-10 bottom-1"></div>
-                    )}
-                    <img
-                      className="w-48 mx-auto border-2 md:border-4 rounded-full"
-                      src={item.profile}
-                    />
-                  </div>
-                  <h2 className="text-center text-2xl font-semibold text-gray-700 mt-2">
-                    {item.name}
-                  </h2>
-                  <h4 className="text-center text-gray-700 mt-2">
-                    Reader Type :{" "}
-                    <span className="text-fuchsia-500">{item.status}</span>
-                  </h4>
-                  <div className="flex gap-2 mt-2 justify-center items-center">
-                    <h2
-                      onClick={() => {
-                        cancleFriendRequest(item._id);
-                      }}
-                      className="py-1 text-gray-500 cursor-pointer px-2 bg-white rounded-md text-sm"
+          {someOfMyFriendDetails &&
+            someOfMyFriendDetails
+              .filter((user) => user._id !== store.userInfo.id)
+              .map((item, i) => {
+                return (
+                  <div key={i} className="bg-gray-50">
+                    <div
+                      key={i}
+                      className="mt-4 bg-gray-100 p-4 rounded-lg border"
                     >
-                      Unfriend
-                    </h2>
-                    <Link
-                      href={`${viewurl}/userdashboard/searchusers/${item._id}`}
-                    >
-                      <h2 className="py-1 px-2 cursor-pointer bg-fuchsia-500 rounded-md text-white text-sm">
-                        View Details
+                      <div className="relative rounded-full bg-black w-fit mx-auto">
+                        {item?.isOnline ? (
+                          <div className="w-5 h-5 border-4 border-white bg-green-500 absolute rounded-full right-10 bottom-1"></div>
+                        ) : (
+                          <div className="w-5 h-5 border-4 border-white bg-[#e7523a] absolute rounded-full right-10 bottom-1"></div>
+                        )}
+                        <img
+                          className="w-48 mx-auto border-2 md:border-4 rounded-full"
+                          src={item.profile}
+                        />
+                      </div>
+                      <h2 className="text-center text-2xl font-semibold text-gray-700 mt-2">
+                        {item.name}
                       </h2>
-                    </Link>
+                      <h4 className="text-center text-gray-700 mt-2">
+                        Reader Type :{" "}
+                        <span className="text-fuchsia-500">{item.status}</span>
+                      </h4>
+                      <div className="flex gap-2 mt-2 justify-center items-center">
+                        {acceptedFriendsId &&
+                        acceptedFriendsId.some((id) => id === item?._id) ? (
+                          <div>
+                            <div
+                              onClick={() => {
+                                setOpenMessangerBox1(true);
+                              }}
+                              className="bg-fuchsia-500 cursor-pointer text-sm text-white rounded-md w-fit px-2 py-1 flex gap-[3px] items-center"
+                            >
+                              <IoPersonAdd size={16} />
+                              Message
+                            </div>
+                            <Messanger
+                              id={item._id}
+                              name={item.name}
+                              profile={item.profile}
+                              title={item.title}
+                              status={item.status}
+                              desc={item.description}
+                              switcher={openMessangerBox1}
+                              setSwitcher={setOpenMessangerBox1}
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            onClick={() => {
+                              friendRequestApi(item?._id);
+                            }}
+                            className="cursor-pointer text-gray-800 bg-slate-200 py-1 rounded-md w-fit px-2 flex gap-[3px] items-center"
+                          >
+                            <IoPersonAdd size={16} />
+                            Add Friend
+                          </div>
+                        )}
+                        <Link
+                          href={`${viewurl}/userdashboard/searchusers/${item._id}`}
+                        >
+                          <h2 className="py-1 px-2 cursor-pointer bg-fuchsia-500 rounded-md text-white text-sm">
+                            View Details
+                          </h2>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-            );
-          })}
+                );
+              })}
 
           <div className="bg-gray-100 mt-4 flex justify-center items-center font-bold text-gray-500">
             View All your Friends

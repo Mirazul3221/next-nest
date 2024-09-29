@@ -1,7 +1,9 @@
 import { MYONLINEFRIEND } from '@/app/global/ProtectRoute'
 import React from 'react'
+import { useSocket } from '../global/SocketProvider'
 const Profile = ({profile,myId}) => {
-  const isOnline =  MYONLINEFRIEND?.some(O=> O === myId)
+  const {myActiveFriends} = useSocket()
+  const isOnline =  myActiveFriends && myActiveFriends?.some(O=> O === myId)
   return (
     <div className='relative'>
  

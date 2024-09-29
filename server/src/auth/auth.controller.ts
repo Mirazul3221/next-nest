@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, UseGuards, HttpException, HttpStatus, UseInterceptors, Bind, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UsePipes, ValidationPipe, UseGuards, HttpException, HttpStatus, UseInterceptors, Bind, UploadedFile, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { CreateUserDto } from './dto/create-user-dto';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateAuthProfileDto } from './dto/update-auth.dto';
-import { Request } from 'express';
+import { Request as ExpReq } from 'express';
 import { FileSystemStoredFile, FormDataRequest } from 'nestjs-form-data';
 // import { FileInterceptor } from '@nestjs/platform-express';
 // import { diskStorage } from 'multer';
@@ -22,7 +22,9 @@ export class AuthController {
 
   @Post('/user/login')
   @UsePipes(ValidationPipe)
- async login( @Body() userDto:CreateUserDto) : Promise<{ token: string; message: string }> {
+ async login(@Request() req, @Body() userDto:CreateUserDto) : Promise<{ token: string; message: string }> {
+  console.log(req.ip,req.headers['sec-ch-ua'])
+  // console.log(req)
     return await this.authService.loginInfo(userDto);
   }
   @Post("getmyprofile")
@@ -108,7 +110,7 @@ async profile (){
 
  @Get("/facebook/redirect")
  @UseGuards(AuthGuard("facebook"))
- async facebookLoginRedirect(@Req() req: Request): Promise<any> {
+ async facebookLoginRedirect(@Req() req: ExpReq): Promise<any> {
    return {
      statusCode: HttpStatus.OK,
      data: req.user,

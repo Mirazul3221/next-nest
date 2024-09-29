@@ -6,7 +6,7 @@ import storeContext from "@/app/global/createContex";
 import { PiPenLight } from "react-icons/pi";
 import { baseurl, viewurl } from "@/app/config";
 import Logo from "@/app/components/Logo";
-import ProtectRoute, { MYONLINEFRIEND } from "@/app/global/ProtectRoute";
+import ProtectRoute from "@/app/global/ProtectRoute";
 import Link from "next/link";
 import { CgProfile } from "react-icons/cg";
 import { LuUser2 } from "react-icons/lu";
@@ -25,6 +25,7 @@ import RadarChart from "../components/RaderChart";
 import AvatarWrapper from "../components/profileWrapper";
 import { GoHistory } from "react-icons/go";
 import { FaFacebook } from "react-icons/fa";
+import { useSocket } from "../global/SocketProvider";
 const Page = () => {
   // SocketInvocation(4356786)
   const [loader, setLoader] = useState(false);
@@ -313,7 +314,7 @@ const Page = () => {
       console.log(error);
     }
   };
-
+const {myActiveFriends} = useSocket()
   return (
     <ProtectRoute>
       <div className="md:px-10 px-4 mb-2 md:min-h-[91vh] duration-300 relative">
@@ -752,7 +753,7 @@ const Page = () => {
                     className="mt-4 bg-gray-100 p-4 rounded-lg border"
                   >
                     <div className="relative rounded-full bg-black w-fit mx-auto">
-                      { MYONLINEFRIEND?.some(O=> O === item._id) ? (
+                      { myActiveFriends && myActiveFriends?.some(O=> O === item._id) ? (
                         <div className="w-5 h-5 border-2 border-white bg-green-500 absolute rounded-full right-10 bottom-1"></div>
                       ) : (
                         <div className="w-5 h-5 border-2 border-white bg-gray-400 absolute rounded-full right-10 bottom-1"></div>
@@ -781,7 +782,7 @@ const Page = () => {
                           View Details
                         </h2>
                       </a>
-                      { MYONLINEFRIEND?.some(O=> O === item._id) && (
+                      { myActiveFriends && myActiveFriends?.some(O=> O === item._id) && (
                         <h2
                           onClick={() => {
                             inviteYourFriend(item._id);

@@ -15,6 +15,7 @@ import { baseurl } from "../config";
 import Test from "./components/Test";
 
 import SuperHeader from "./components/SuperHeader";
+import { useSocket } from "./global/SocketProvider";
 // import Image from "next/image";
 // import logo from "@/public/bcs-logo.png"
 // import { TextEditor } from './components/TextEditor';
@@ -66,6 +67,9 @@ const UserDashboard = () => {
     };
     updateUserData();
   }, []);
+
+  const {socket,myActiveFriends} = useSocket()
+  console.log(socket,myActiveFriends)
   return (
     <ProtectRoute>
       {/* <Script
