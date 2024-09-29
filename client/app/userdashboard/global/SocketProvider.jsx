@@ -2,6 +2,7 @@
 import React, { useCallback, useContext, useState } from 'react'
 import { useEffect } from 'react'
 import { io } from 'socket.io-client';
+import socketContext from './socketContext'
 import storeContext from '@/app/global/createContex';
 const SocketProvider = ({children}) => {
 let mysocketUrl = "https://edu-socket.onrender.com";
