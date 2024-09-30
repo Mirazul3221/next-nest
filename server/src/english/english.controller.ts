@@ -9,7 +9,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class EnglishController {
   constructor(private readonly englishService: EnglishService) {}
 
-  @Post('/add')
+  @Post('/add')//
   @FormDataRequest({storage:FileSystemStoredFile})
  async create(@Body() createEnglishDto: CreateEnglishDto) {
   // console.log(createEnglishDto)
