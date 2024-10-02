@@ -1,3 +1,4 @@
+'use client'
 // import storeContext from '@/app/global/createContex';
 import { useSearchParams } from 'next/navigation';
 // import React, { useContext, useEffect, useRef } from 'react'
