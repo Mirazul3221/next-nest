@@ -1,9 +1,10 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 
 const Page = () => {
     const data = useRouter()
+    const ddd = useSearchParams()
   return (
     <div>
        ngng  
