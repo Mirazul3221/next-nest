@@ -2,16 +2,16 @@
 import { useRouter } from "next/navigation";
 import { useContext, useEffect } from "react";
 import storeContext from "./createContex";
-import { invokeSocket } from "./socketInvocation";
+import { useSocket } from "../userdashboard/global/SocketProvider";
 export const MYONLINEFRIEND = []
 const ProtectRoute = ({children}) => {
   const { store } = useContext(storeContext)
   const router = useRouter()
+  const {socket} = useSocket()
   useEffect(() => {
-    const socket = invokeSocket()
-    socket.emit("myUserInfo",{id:store.userInfo.id,name:store.userInfo.name})
+   socket && socket.emit("myUserInfo",{id:store.userInfo.id,name:store.userInfo.name})
     return () => {
-      socket.disconnect()
+      socket?.disconnect()
     };
   }, []);
   const protectRouter = ()=>{

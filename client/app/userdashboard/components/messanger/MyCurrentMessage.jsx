@@ -3,11 +3,11 @@
 import { baseurl } from "@/app/config";
 import storeContext from "@/app/global/createContex";
 import { MYONLINEFRIEND } from "@/app/global/ProtectRoute";
-import { invokeSocket } from "@/app/global/socketInvocation";
 import axios from "axios";
 import HTMLReactParser from "html-react-parser";
 import React, { useContext, useRef, useState } from "react";
 import { useEffect } from "react";
+import { useSocket } from "../../global/SocketProvider";
 
 const MyCurrentMessage = ({
   id,
@@ -25,7 +25,7 @@ const MyCurrentMessage = ({
   const [msgStatus, setMsgStatus] = useState('sending...');
   const [loader, setLoader] = useState(false);
   const removeMsgRef = useRef(null);
-   const socket = invokeSocket();
+   const {socket} = useSocket()
    const msgTime = new Date().getDay()
   ////////////////////////////This Function has been created for providing levele system//////////////////////////////////////
   const setALevel = (stack, level) => {

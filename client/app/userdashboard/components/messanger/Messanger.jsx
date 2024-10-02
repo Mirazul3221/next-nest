@@ -11,9 +11,9 @@ import { RxCross1 } from "react-icons/rx";
 import "@/app/userdashboard/components/cssfiles/scrolling_bar.css";
 import MyCurrentMessage from "./MyCurrentMessage";
 import HTMLReactParser from "html-react-parser";
-import { invokeSocket } from "@/app/global/socketInvocation";
 import messageader from "@/public/notification-soun/f35a1c_d8d5997a805a452ba9d3f5cbb48ce87cmv2-ezgif.com-crop.gif";
 import Image from "next/image";
+import { useSocket } from "../../global/SocketProvider";
 const Messanger = ({
   id,
   name,
@@ -37,6 +37,7 @@ const Messanger = ({
   const [typingloading, setTypingLoading] = useState();
   const messangerRef = useRef(null);
   const { store } = useContext(storeContext);
+  const {socket} = useSocket()
   const bottomRef = useRef(null);
   const scrollToBottom = () => {
     if (bottomRef.current) {
@@ -44,7 +45,6 @@ const Messanger = ({
     }
   };
   useEffect(() => {
-    const socket = invokeSocket();
     setInvoke(socket);
   }, []);
   useEffect(() => {
