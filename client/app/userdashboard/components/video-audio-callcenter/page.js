@@ -3,8 +3,11 @@ import { useSearchParams } from 'next/navigation';
 import React from 'react'
 
 const Page = () => {
-    const data = useSearchParams();
-    console.log(data)
+
+    if(typeof window !== 'undefined'){
+        const data = useSearchParams();
+        console.log(data)
+      }
   return (
     <div>
         hello
