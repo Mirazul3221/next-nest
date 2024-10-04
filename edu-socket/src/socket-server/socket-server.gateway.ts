@@ -35,6 +35,7 @@ export class NotificationsGateway
 
   ///////////////////////////////////////////////Collect All Online Users Data///////////////////////////////////////
   private onlineUsers = [];
+  private socketUsers = {}
   connectedUsesrs = async (socketId, userId) => {
     const isExist = await this.onlineUsers.some((u) => u.userId === userId);
     if (!isExist) {
@@ -47,6 +48,14 @@ export class NotificationsGateway
   };
   ////////////////////////////////////////Method For Connetted Users//////////////////////////////////////////
   async handleConnection(client: Socket) {
+   
+    const userId =await client.handshake.query.myId as string;
+    if (!this.socketUsers[userId]) {
+      this.socketUsers[userId] = []
+    }
+    this.socketUsers[userId].push(client.id)
+    console.log(await this.socketUsers[userId])
+   
     client.on('myUserInfo', async ({ id }) => {
       if (id) {
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -72,16 +81,22 @@ export class NotificationsGateway
               .emit('hoga', 'Hoga mara shara');
           }
         });
-
+////////////////////////////////////////////////////////////////////////////////////////
         client.on('typingMsg', async (data) => {
           const myCurrentFriend = await this.onlineUsers.filter(
             (U) => U.userId === data?.receiverId,
           );
-          await client
-            .to(myCurrentFriend[0]?.socketId)
-            .emit('getTypingMsg', data);
-        });
 
+         if (this.socketUsers[data?.receiverId]?.length > 0) {
+          this.socketUsers[data?.receiverId]?.map(id=>{
+            client
+            .to(id)
+            .emit('getTypingMsg', data); 
+          })
+         }
+
+        });
+/////////////////////////////////////////////////////////////////////////////////////////
         client.on('openMessageWindow', async (data) => {
           console.log(data);
           const myCurrentFriend = await this.onlineUsers.filter(
@@ -91,11 +106,10 @@ export class NotificationsGateway
             .to(myCurrentFriend[0]?.socketId)
             .emit('getOpenMessageWindow', data.status);
         });
-        let ids = [];
-        await this.onlineUsers?.map((user) => {
-          ids.push(user?.userId);
-        });
-        await client.emit('onlineFriends', ids);
+
+//////////////////////////Here is the logic for active users/////////////////////////////////        
+        const userIds = Object.keys(this.socketUsers)
+        await client.emit('onlineFriends', userIds);
       }
     });
 
@@ -118,7 +132,10 @@ export class NotificationsGateway
   };
   ////////////////////////////////////////Methin For disConnetted Users////////////////////////////////////////////
   async handleDisconnect(client: Socket) {
+    const userId =await client.handshake.query.myId as string;
     await this.removeOfflineUsers(client.id);
+    console.log('user disconnect' + client.id)
+    this. socketUsers[userId].shift()
     console.log(this.onlineUsers);
     client.on('friendsId', (data) => {});
   }

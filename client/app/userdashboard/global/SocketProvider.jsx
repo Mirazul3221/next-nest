@@ -26,12 +26,13 @@ useEffect(() => {
 useEffect(() => {
    socket && socket.on('onlineFriends',(res)=>{
         setMyActiveFriends(res)
+        console.log(res)
     })
     return () => {
        socket?.off('onlineFriends') 
     };
 }, [socket]);
-
+console.log(socket)
   return (
     <socketContext.Provider value={{socket,myActiveFriends}}>
         {children}
