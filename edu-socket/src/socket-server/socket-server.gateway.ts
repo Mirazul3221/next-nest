@@ -55,41 +55,31 @@ export class NotificationsGateway
     }
     this.socketUsers[userId].push(client.id)
     console.log(await this.socketUsers[userId])
-   
-    client.on('myUserInfo', async ({ id }) => {
-      if (id) {
+      if (userId) {
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
-        await this.connectedUsesrs(client.id, id);
-        console.log(`User connected: ${id} and sid:${client.id}`);
+        console.log(`User connected: ${userId} and sid:${client.id}`);
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         client.on('checkSenderOnlineStatus',async (data) => {
-          const isOnline =await this.onlineUsers.some((U) => (U.userId === data));
+          let isOnline = Object.keys(this.socketUsers)?.some(u =>u === data)
           client.emit('getSenderOnlineStatus', isOnline);
           console.log(data)
         });
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
         client.on('send-message-to-my-friend', async (data) => {
-          const myCurrentFriend = await this.onlineUsers.filter(
-            (U) => U.userId === data?.receiverId,
-          );
-          console.log(myCurrentFriend);
-          if (myCurrentFriend[0]?.socketId !== undefined) {
-            await client
-              .to(myCurrentFriend[0]?.socketId)
-              .emit('get-message-from-my-friend', data);
-            await client
-              .to(myCurrentFriend[0]?.socketId)
-              .emit('hoga', 'Hoga mara shara');
-          }
+          if (this.socketUsers[data?.receiverId]?.length > 0) {
+            this.socketUsers[data?.receiverId]?.map(async id=>{
+             await client
+              .to(id)
+              .emit('get-message-from-my-friend', data); 
+            })
+           }
+
         });
 ////////////////////////////////////////////////////////////////////////////////////////
         client.on('typingMsg', async (data) => {
-          const myCurrentFriend = await this.onlineUsers.filter(
-            (U) => U.userId === data?.receiverId,
-          );
-
          if (this.socketUsers[data?.receiverId]?.length > 0) {
-          this.socketUsers[data?.receiverId]?.map(id=>{
-            client
+          this.socketUsers[data?.receiverId]?.map(async id=>{
+            await client
             .to(id)
             .emit('getTypingMsg', data); 
           })
@@ -98,46 +88,34 @@ export class NotificationsGateway
         });
 /////////////////////////////////////////////////////////////////////////////////////////
         client.on('openMessageWindow', async (data) => {
-          console.log(data);
-          const myCurrentFriend = await this.onlineUsers.filter(
-            (U) => U.userId === data?.receiverId,
-          );
-          await client
-            .to(myCurrentFriend[0]?.socketId)
-            .emit('getOpenMessageWindow', data.status);
+            if (this.socketUsers[data?.receiverId]?.length > 0) {
+              this.socketUsers[data?.receiverId]?.map(async id=>{
+               await client
+                .to(id)
+                .emit('getOpenMessageWindow',  data.status); 
+              })
+             }
         });
 
 //////////////////////////Here is the logic for active users/////////////////////////////////        
         const userIds = Object.keys(this.socketUsers)
         await client.emit('onlineFriends', userIds);
       }
-    });
-
-    client.on('goa', (g) => {
-      console.log(g);
-    });
-    // setTimeout(async() => {
-    //   if (userId !== undefined) {
-    //     await this.reader.updateUserOnlineStatus(userId,false)
-    //     console.log('off')
-    //   }
-    // }, 60 * 1000 * 10);
   }
   //
-  //////////////////////////////Remove All Offline Users///////////////////////////////////////
-  removeOfflineUsers = async (socketId) => {
-    this.onlineUsers = await this.onlineUsers.filter(
-      (u) => u.socketId !== socketId,
-    );
-  };
   ////////////////////////////////////////Methin For disConnetted Users////////////////////////////////////////////
   async handleDisconnect(client: Socket) {
     const userId =await client.handshake.query.myId as string;
-    await this.removeOfflineUsers(client.id);
-    console.log('user disconnect' + client.id)
     this. socketUsers[userId].shift()
-    console.log(this.onlineUsers);
-    client.on('friendsId', (data) => {});
+    // client.on('friendsId', (data) => {});
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////
 } 
+
+
+  // //////////////////////////////Remove All Offline Users///////////////////////////////////////
+  // removeOfflineUsers = async (socketId) => {
+  //   this.onlineUsers = await this.onlineUsers.filter(
+  //     (u) => u.socketId !== socketId,
+  //   );
+  // };
