@@ -27,6 +27,7 @@ const ProtectRoute = ({children}) => {
       socket?.off("signal-call")
     };
   }, [socket]);
+  console.log(data)
   const protectRouter = ()=>{
     router.push("/login")
   }

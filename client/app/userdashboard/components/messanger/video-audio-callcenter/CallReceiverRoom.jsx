@@ -17,10 +17,12 @@ const CallReceiverRoom = ({remoteUser}) => {
       audio.currentTime = 0
     };
   }, []);
+
   return (
     <div className='w-screen h-screen bg-gray-300/60 text-white fixed flex justify-center items-center left-0 top-0 z-40'>
         <div className="w-1/3 h-1/2 rounded-md shadow-md bg-white justify-center flex items-center">
         <div className="relative">
+          <h2>{profile}</h2>
           <img
             className="border-[3px] border-white mx-auto w-32 h-32 shadow-[-1px_5px_40px_0px_gray] rounded-full"
             src={profile}

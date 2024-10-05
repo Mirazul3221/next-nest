@@ -71,8 +71,9 @@ export class AuthService {
         const token = await this.jwtService.sign({
           id: (await loginInfo).id,
           name: (await loginInfo).name,
+          profile: (await loginInfo).profile,
           role: (await loginInfo).role,
-        });
+        });//
         return { token, message: 'User login success' };
       } else {
         throw new UnauthorizedException('Invalied password !');
