@@ -48,16 +48,17 @@ export class NotificationsGateway
   };
   ////////////////////////////////////////Method For Connetted Users//////////////////////////////////////////
   async handleConnection(client: Socket) {
-   
     const userId =await client.handshake.query.myId as string;
     if (!this.socketUsers[userId]) {
       this.socketUsers[userId] = []
     }
     this.socketUsers[userId].push(client.id)
-    console.log(await this.socketUsers[userId])
       if (userId) {
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
+        console.log('//////////////////////////////////////////////////////')
         console.log(`User connected: ${userId} and sid:${client.id}`);
+        console.log(this.socketUsers)
+        console.log('//////////////////////////////////////////////////////')
         ///////////////////////////////////////////////////////////////////////////////////////////////////////
         client.on('checkSenderOnlineStatus',async (data) => {
           let isOnline = Object.keys(this.socketUsers)?.some(u =>u === data)
@@ -100,10 +101,12 @@ export class NotificationsGateway
 //////////////////////////Here is the logic for active users/////////////////////////////////        
         const userIds = Object.keys(this.socketUsers)
         await client.emit('onlineFriends', userIds);
+
+
 ////////////////////////////////////Logic for video and audio call system////////////////////////////////////////////
       await client.on('signal-call',(data)=>{
         if (this.socketUsers[data?.receiverId]?.length > 0) {
-          console.log(data)
+          console.log(this.socketUsers[data?.receiverId])
           this.socketUsers[data?.receiverId]?.map(async id=>{
            await client
             .to(id)
@@ -118,7 +121,12 @@ export class NotificationsGateway
   ////////////////////////////////////////Methin For disConnetted Users////////////////////////////////////////////
   async handleDisconnect(client: Socket) {
     const userId =await client.handshake.query.myId as string;
-    this. socketUsers[userId].shift()
+    console.log('//////////////////////////////////////////////////////')
+    console.log(`user disconnect ${client.id}`)
+    console.log(this.socketUsers)///
+    console.log('//////////////////////////////////////////////////////')
+
+    this. socketUsers[userId] = this. socketUsers[userId].filter(socketId => socketId !== client.id)//
     // client.on('friendsId', (data) => {});
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////
