@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import React, { useCallback, useContext, useRef, useState } from "react";
+import React, { Suspense, useCallback, useContext, useRef, useState } from "react";
 import { useEffect } from "react";
 import storeContext from "@/app/global/createContex";
 import { useSocket } from "@/app/userdashboard/global/SocketProvider";
@@ -82,4 +82,10 @@ const Page = () => {
   );
 };
 
-export default Page;
+ const Suspen = ()=>{
+  return <Suspense>
+    <Page/>
+  </Suspense>
+}
+
+export default Suspen
