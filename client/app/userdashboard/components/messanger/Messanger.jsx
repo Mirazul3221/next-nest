@@ -14,6 +14,7 @@ import HTMLReactParser from "html-react-parser";
 import messageader from "@/public/notification-soun/f35a1c_d8d5997a805a452ba9d3f5cbb48ce87cmv2-ezgif.com-crop.gif";
 import Image from "next/image";
 import { useSocket } from "../../global/SocketProvider";
+import EntryPoint from "./video-audio-callcenter/EntryPoint";
 const Messanger = ({
   id,
   name,
@@ -228,7 +229,9 @@ const Messanger = ({
             <p className="text-[9px] text-white">{status}</p>
           </div>
         </div>
-        <div>
+        <div className="flex justify-center gap-2 text-white">
+          <EntryPoint user={{id,name,profile,title,type:'Audio'}}/>
+          <EntryPoint user={{id,name,profile,title,type:'Video'}}/>
           <RxCross1
             onClick={() => setSwitcher(false)}
             className="cursor-pointer"

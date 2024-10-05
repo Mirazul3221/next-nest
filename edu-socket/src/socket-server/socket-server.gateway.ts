@@ -100,8 +100,20 @@ export class NotificationsGateway
 //////////////////////////Here is the logic for active users/////////////////////////////////        
         const userIds = Object.keys(this.socketUsers)
         await client.emit('onlineFriends', userIds);
+////////////////////////////////////Logic for video and audio call system////////////////////////////////////////////
+      await client.on('signal-call',(data)=>{
+        if (this.socketUsers[data?.receiverId]?.length > 0) {
+          console.log(data)
+          this.socketUsers[data?.receiverId]?.map(async id=>{
+           await client
+            .to(id)
+            .emit('signal-call',  data); 
+          })
+         }
+      })
+
       }
-  }
+  }//
   //
   ////////////////////////////////////////Methin For disConnetted Users////////////////////////////////////////////
   async handleDisconnect(client: Socket) {
