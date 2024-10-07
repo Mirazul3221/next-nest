@@ -9,8 +9,10 @@ const Page = () => {
   const data = useSearchParams();
   const localuserRef = useRef(null);
   // const [localStream, setLocalStream] = useState(null);
+  const [callInv,setCallInv] = useState('start-call')
   const [myFace, setMyFace] = useState(true);
   const [isRing, setIsRing] = useState(true);
+  const [isRemoteRing, setIsRemoteRing] = useState(false);
   const {store} = useContext(storeContext)
   const id = data.get("userid");
   const name = data.get("name");
@@ -35,13 +37,37 @@ const Page = () => {
   }, [socket]);
 
   const handleCallEnd = () => {
+    setIsRemoteRing(false)
     setMyFace(false);
     setIsRing(false)
     socket?.emit("end-call",{id,end:'call-end'})
+    socket && socket.on('call-reached',(res)=>{
+      console.log(res)
+    })
+    setCallInv('end-call')
   };
+  const handleCallStart = () => {
+    setMyFace(true);
+    setIsRing(true)
+    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:id,name:store.userInfo.name,profile:store.userInfo.profile,type})
+    setCallInv('start-call')
+  };
+// useEffect(() => {
 
-  return (
-    <div className="bg-black w-screen h-screen left-0 fixed justify-center p-10 items-center overflow-x-hidden">
+// }, [socket]);
+
+useEffect(() => {
+  socket && socket.on('call-reached',(res)=>{
+    setIsRing(false)
+    setIsRemoteRing(true)
+  })
+  return () => {
+    
+  };
+}, [socket]);
+if (callInv === 'start-call') {
+    return (
+      <div className="bg-black w-screen h-screen left-0 fixed justify-center p-10 items-center overflow-x-hidden">
       {myFace && type=== 'Video' && (
         <div className="absolute right-4 top-4 w-3/12 rounded-md h-3/12">
           <video
@@ -55,11 +81,13 @@ const Page = () => {
 
       {
         isRing && <audio autoPlay loop src="/call-ringtone/notification-sound-ringtone-for-phone-163638.mp3"/>
+      } {
+        isRemoteRing && <audio autoPlay loop src="/call-ringtone/digital-alarm-107256.mp3"/>
       }
       <div className="w-full h-full justify-center flex items-center">
         <div className="relative">
           <img
-            className="border-[10px] border-white mx-auto w-48 h-48 shadow-[-1px_5px_40px_0px_white] rounded-full"
+            className={`border-[10px] duration-500 border-white mx-auto w-48 h-48 shadow-[-1px_5px_40px_0px_white] rounded-full`}
             src={profile}
             alt="profile-image"
           />
@@ -79,7 +107,51 @@ const Page = () => {
         </div>
       </div>
     </div>
-  );
+    );
+} else if (callInv === 'end-call'){
+   return(
+    <div className="bg-black w-screen h-screen left-0 fixed justify-center p-10 items-center overflow-x-hidden">
+    {myFace && type=== 'Video' && (
+      <div className="absolute right-4 top-4 w-3/12 rounded-md h-3/12">
+        <video
+          style={{ borderRadius: "10px" }}
+          ref={localuserRef}
+          autoPlay
+          className="w-full h-ful"
+        />
+      </div>
+    )}
+  
+    {
+      isRing && <audio autoPlay loop src="/call-ringtone/notification-sound-ringtone-for-phone-163638.mp3"/>
+    } {
+      isRemoteRing && <audio autoPlay loop src="/call-ringtone/digital-alarm-107256.mp3"/>
+    }
+    <div className="w-full h-full justify-center flex items-center">
+      <div className="relative">
+        <img
+          className={`border-[10px] border-white mx-auto w-48 h-48 scale-105 ${callInv === 'end-call' && 'scale-75'} duration-500 rounded-full`}
+          src={profile}
+          alt="profile-image"
+        />
+        {type === "Video" && (
+          <h3 className="text-2xl text-white">
+            video call end
+          </h3>
+        )}
+        {type === "Audio" && (
+          <h3 className="text-2xl text-white">
+            audio call end
+          </h3>
+        )}
+        <h4 className="text-white w-fit bg-green-400 px-6 rounded-md cursor-pointer" onClick={handleCallStart}>
+          Call Start
+        </h4>
+      </div>
+    </div>
+  </div>
+   )
+}
 };
 
  const Suspen = ()=>{

@@ -80,7 +80,7 @@ export class NotificationsGateway
         client.on('typingMsg', async (data) => {
          if (this.socketUsers[data?.receiverId]?.length > 0) {
           this.socketUsers[data?.receiverId]?.map(async id=>{
-            await client
+            await this.server
             .to(id)
             .emit('getTypingMsg', data); 
           })
@@ -106,19 +106,39 @@ export class NotificationsGateway
 ////////////////////////////////////Logic for video and audio call system////////////////////////////////////////////
       await client.on('signal-call',(data)=>{
         if (this.socketUsers[data?.receiverId]?.length > 0) {
-          console.log(this.socketUsers[data?.receiverId])
+          console.log('first')
+          console.log(this.socketUsers)
+          console.log('first')
+          console.log(data)
           this.socketUsers[data?.receiverId]?.map(async id=>{
-           await client
+           await this.server
             .to(id)
             .emit('signal-call',  data); 
           })
+          
+          this.socketUsers[data?.senderId]?.map(async id=>{
+            await this.server
+             .to(id)
+             .emit('call-reached',  this.socketUsers); 
+           })
          }
+      })
+
+      await client.on('end-call',req=>{
+        if (this.socketUsers[req?.id].length > 0) {
+          console.log(req)
+          this.socketUsers[req?.id]?.map(async id=>{
+            await this.server
+             .to(id)
+             .emit('end-call-signal',  req?.end); 
+           })
+        }
       })
 
       }
   }//
   //
-  ////////////////////////////////////////Methin For disConnetted Users////////////////////////////////////////////
+  ////////////////////////////////////////Method For disConnetted Users////////////////////////////////////////////
   async handleDisconnect(client: Socket) {
     const userId =await client.handshake.query.myId as string;
     console.log('//////////////////////////////////////////////////////')
@@ -127,10 +147,14 @@ export class NotificationsGateway
     console.log('//////////////////////////////////////////////////////')
 
     this. socketUsers[userId] = this. socketUsers[userId].filter(socketId => socketId !== client.id)//
+
+    if (this.socketUsers[userId].length === 0) {
+       delete this.socketUsers[userId]
+    }
     // client.on('friendsId', (data) => {});
   }
   //////////////////////////////////////////////////////////////////////////////////////////////////////
-} 
+} //
 
 
   // //////////////////////////////Remove All Offline Users///////////////////////////////////////

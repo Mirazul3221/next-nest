@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useEffect } from 'react'
 import { io } from 'socket.io-client';
 import socketContext from './socketContext'
@@ -33,6 +33,10 @@ useEffect(() => {
     };
 }, [socket]);
 console.log(socket)
+
+const testAlert = ()=>{
+  alert("I am from socket provider")
+}
   return (
     <socketContext.Provider value={{socket,myActiveFriends}}>
         {children}

@@ -7,8 +7,6 @@ import CallReceiverRoom from "../userdashboard/components/messanger/video-audio-
 export const MYONLINEFRIEND = []
 const ProtectRoute = ({children}) => {
   const { store } = useContext(storeContext)
-  const [window, setWindow] = useState(false)
-  const [data,setData] = useState(null)
   const router = useRouter()
   const {socket} = useSocket()
   useEffect(() => {
@@ -17,25 +15,12 @@ const ProtectRoute = ({children}) => {
       socket?.disconnect()
     };
   }, []);
-
-  useEffect(() => {
-    socket?.on('signal-call',(data)=>{
-      setWindow(true)
-      setData(data)
-    })
-    return () => {
-      socket?.off("signal-call")
-    };
-  }, [socket]);
-  console.log(data)
   const protectRouter = ()=>{
     router.push("/login")
   }
     if (store?.userInfo?.id) {
       return <div>
-        {
-          window && <CallReceiverRoom remoteUser={{name:data?.name,profile:data?.profile,type:data.type,ring:window}} />
-        }
+          <CallReceiverRoom />
         {children}
         </div>  
     } else {
