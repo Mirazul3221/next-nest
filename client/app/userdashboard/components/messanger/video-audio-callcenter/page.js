@@ -43,7 +43,7 @@ const Page = () => {
          }
       });
       const mike = stream?.getAudioTracks()[0]
-      mike.enabled = mike.enabled
+      mike.enabled = !mike.enabled
       const devices = await navigator.mediaDevices.enumerateDevices()
       setDeviceInfo(devices)
       setLocalStram(stream)
@@ -52,7 +52,7 @@ const Page = () => {
     generateStream();
   }, []);
 
-
+//
   const handleCallEnd = () => {
     setIsRemoteRing(false)
     setMyFace(false);
