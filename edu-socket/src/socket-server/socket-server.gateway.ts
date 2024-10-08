@@ -100,7 +100,7 @@ export class NotificationsGateway
 
 //////////////////////////Here is the logic for active users/////////////////////////////////        
         const userIds = Object.keys(this.socketUsers)
-        await client.emit('onlineFriends', userIds);
+        await this.server.emit('onlineFriends', userIds);
 
 
 ////////////////////////////////////Logic for video and audio call system////////////////////////////////////////////
@@ -123,7 +123,7 @@ export class NotificationsGateway
            })
          }
       })
-
+///////////////////////////////////////////////////////////////////////////////////
       await client.on('end-call',req=>{
         if (this.socketUsers[req?.id].length > 0) {
           console.log(req)
@@ -134,9 +134,20 @@ export class NotificationsGateway
            })
         }
       })
+      /////////////////////////////////////////////////////////////////////////////
+      await client.on('callStatus',req=>{
+        if (this.socketUsers[req?.id].length > 0) {
+          console.log(req)
+          this.socketUsers[req?.id]?.map(async id=>{
+            await this.server
+             .to(id)
+             .emit('callStatus',  req?.msg); 
+           })
+        }
+      })
 
       }
-  }//
+  }/////
   //
   ////////////////////////////////////////Method For disConnetted Users////////////////////////////////////////////
   async handleDisconnect(client: Socket) {
