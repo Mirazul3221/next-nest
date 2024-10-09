@@ -98,7 +98,7 @@ export class NotificationsGateway
              }
         });
 
-//////////////////////////Here is the logic for active users/////////////////////////////////        
+//////////////////////////Here is the logic for active users////////////////////////////////     
         const userIds = Object.keys(this.socketUsers)
         await this.server.emit('onlineFriends', userIds);
 
@@ -106,15 +106,11 @@ export class NotificationsGateway
 ////////////////////////////////////Logic for video and audio call system////////////////////////////////////////////
       await client.on('signal-call',(data)=>{
         if (this.socketUsers[data?.receiverId]?.length > 0) {
-          console.log('first')
-          console.log(this.socketUsers)
-          console.log('first')
-          console.log(data)
           this.socketUsers[data?.receiverId]?.map(async id=>{
            await this.server
             .to(id)
             .emit('signal-call',  data); 
-          })
+          })////
           
           this.socketUsers[data?.senderId]?.map(async id=>{
             await this.server
@@ -126,7 +122,6 @@ export class NotificationsGateway
 ///////////////////////////////////////////////////////////////////////////////////
       await client.on('end-call',req=>{
         if (this.socketUsers[req?.id].length > 0) {
-          console.log(req)
           this.socketUsers[req?.id]?.map(async id=>{
             await this.server
              .to(id)
@@ -134,18 +129,21 @@ export class NotificationsGateway
            })
         }
       })
-      /////////////////////////////////////////////////////////////////////////////
+      //////////////////////////////////////////////////////////////////////////
       await client.on('callStatus',req=>{
         if (this.socketUsers[req?.id].length > 0) {
-          console.log(req)
           this.socketUsers[req?.id]?.map(async id=>{
             await this.server
              .to(id)
-             .emit('callStatus',  req?.msg); 
+             .emit('callStatus',  {msg:req?.msg,answer:req.answer}); 
            })
         }
       })
 
+      ///////////////////////////////////////////////////////////////////
+      await client.on('ice-candidate',res=>{
+        console.log(res)//
+      })
       }
   }/////
   //

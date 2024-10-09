@@ -2,7 +2,7 @@ import storeContext from '@/app/global/createContex';
 import { useSocket } from '@/app/userdashboard/global/SocketProvider';
 import React, { useContext, useEffect, useState } from 'react'
 const CallReceiverRoom = () => {
-  const {socket} = useSocket()
+  const {socket,createAnswer} = useSocket()
   const {store} = useContext(storeContext)
   const [window, setWindow] = useState(true)
   const [cancleWindow,setCancleWindow] = useState(false)
@@ -41,8 +41,9 @@ const CallReceiverRoom = () => {
     };
   }, [socket]);
   
-  const handleReceivecall = ()=>{
-    socket?.emit('callStatus',{id:data?.senderId,msg:'call-received'})
+  const handleReceiveCall = async()=>{
+    const answer = await createAnswer(data?.offer)
+    socket?.emit('callStatus',{id:data?.senderId,msg:'call-received',answer})
   }
 
   const cancleCall = ()=>{
@@ -78,7 +79,7 @@ const CallReceiverRoom = () => {
         }} className="text-white w-fit bg-red-500 px-6 rounded-md cursor-pointer" >
               Decline
             </h4>
-            <h4 onClick={handleReceivecall} className="text-white w-fit bg-green-500 px-6 rounded-md cursor-pointer" >
+            <h4 onClick={handleReceiveCall} className="text-white w-fit bg-green-500 px-6 rounded-md cursor-pointer" >
                <a target='_blank' href={`/userdashboard/components/messanger/video-audio-callcenter?userid=${encodeURIComponent(data?.senderId)}&name=${encodeURIComponent(data?.name)}&profile=${data?.profile}&title=${data?.title}&type=${data?.type}&action=call-received`}> Receive Call</a>
             </h4>
         </div>

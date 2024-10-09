@@ -27,9 +27,13 @@ const Page = () => {
   //    const {socket} = useSocket()
   //   return socket
   //  },[])
-   const {socket} = useSocket()
+   const {socket,peearConnectionRef,createOffer,setRemoteAns,sendStream,iceCandidate} = useSocket()
+   const startCall = async()=>{
+    const offer = await createOffer()
+    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:id,name:store.userInfo.name,profile:store.userInfo.profile,type,offer})
+   }
   if (callInv === 'call-start') {
-    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:id,name:store.userInfo.name,profile:store.userInfo.profile,type})
+    startCall()
   }
  
   useEffect(() => {
@@ -42,6 +46,9 @@ const Page = () => {
           frameRate:{min:30, max:90}
          }
       });
+      //////////////////////////////////////////
+      sendStream(stream)
+      //////////////////////////////////////////
       const mike = stream?.getAudioTracks()[0]
       mike.enabled = !mike.enabled
       const devices = await navigator.mediaDevices.enumerateDevices()
@@ -51,6 +58,14 @@ const Page = () => {
 
     generateStream();
   }, []);
+/////////////////////Ice candidate setup////////////////////
+  useEffect(() => {
+    peearConnectionRef.current.onicecandidate = (event)=>{
+       if (event.candidate) {
+         socket?.emit('ice-candidate',event.candidate)
+       }
+      }
+  }, [socket]);
 
 //
   const handleCallEnd = () => {
@@ -83,7 +98,10 @@ useEffect(() => {
 }, [socket]);
 
 useEffect(() => {
-  socket?.on('callStatus',res=>console.log(res))
+  socket?.on('callStatus',res=> {
+    console.log(res)
+    setRemoteAns(res?.answer)
+  })
   return () => {
     socket?.off('callStatus')
   };
@@ -105,7 +123,9 @@ if (localStream) {
 }
 }
 
-console.log(callInv)
+
+
+console.log(peearConnectionRef)
 // const aidioInput = localStream?.getAudioTracks()[0]
 if (callInv === 'call-start') {
     return (
@@ -114,9 +134,9 @@ if (callInv === 'call-start') {
         <div className="absolute right-4 top-4 w-3/12 rounded-md h-3/12">
                 <MyVideoStream stream={localStream}/>
           <div className="h-[400px] overflow-y-auto">               {
-                deviceInfo?.map(info=>{
+                deviceInfo?.map((info,i)=>{
                   return (
-                  !toggleVid &&  <h4 className="text-white mt-4">{info.kind} {info.label}</h4>
+                  !toggleVid &&  <h4 key={i} className="text-white mt-4">{info.kind} {info.label}</h4>
                   )
                 })
                }</div>
