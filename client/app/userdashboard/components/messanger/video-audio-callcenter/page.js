@@ -28,15 +28,34 @@ const Page = () => {
   //    const {socket} = useSocket()
   //   return socket
   //  },[])
-   const {socket,peearConnectionRef,createOffer,setRemoteAns,sendStream,iceCandidate} = useSocket()
+   const {socket} = useSocket()
    const startCall = async()=>{
-    const offer = await createOffer()
-    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:fdId,name:store.userInfo.name,profile:store.userInfo.profile,type,offer})
+   await socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:fdId,name:store.userInfo.name,profile:store.userInfo.profile,type})
    }
   if (callInv === 'call-start') {
     startCall()
   }
- 
+  useEffect(() => {
+    if (action === 'call-received') {
+        socket && socket.emit('receivedCallSuccess',{friendId:fdId,msg:'call received success'})
+    }
+  }, [action,socket]);
+
+  ///////////////////////////Render webRTC in here/////////////////////////////
+  useEffect(() => {
+    socket && socket.on('receivedCallSuccess',()=>{
+       init()
+    })
+    return () => {
+      socket && socket.off('receivedCallSuccess')
+    };
+  }, [socket]);
+ ///////////////////////////////////////////////////////////////////////////////
+
+ const init =async ()=>{
+   console.log("call received success")
+ }
+ //////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     const generateStream = async () => {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -48,8 +67,6 @@ const Page = () => {
          }
       });
       //////////////////////////////////////////
-      sendStream(stream)
-      //////////////////////////////////////////
       const mike = stream?.getAudioTracks()[0]
       mike.enabled = !mike.enabled
       const devices = await navigator.mediaDevices.enumerateDevices()
@@ -59,16 +76,6 @@ const Page = () => {
 
     generateStream();
   }, []);
-/////////////////////Ice candidate setup////////////////////
-  useEffect(() => {
-    peearConnectionRef.current.onicecandidate = (event)=>{
-       if (event.candidate) {
-         socket?.emit('ice-candidate',event.candidate)
-       }
-      }
-  }, [socket]);
-
-//
   const handleCallEnd = () => {
     setIsRemoteRing(false)
     setMyFace(false);
@@ -98,17 +105,6 @@ useEffect(() => {
   };
 }, [socket]);
 
-useEffect(() => {
-  socket?.on('callStatus',res=> {
-    console.log(res)
-    setRemoteAns(res?.answer)
-  })
-  return () => {
-    socket?.off('callStatus')
-  };
-}, [socket]);
-
-
 const toggleVideo = ()=>{
 if (localStream) {
   const videoCamera = localStream?.getVideoTracks()[0]
@@ -123,10 +119,6 @@ if (localStream) {
   setToggleMick(!toggleMick)
 }
 }
-
-
-
-console.log(peearConnectionRef)
 // const aidioInput = localStream?.getAudioTracks()[0]
 if (callInv === 'call-start') {
     return (

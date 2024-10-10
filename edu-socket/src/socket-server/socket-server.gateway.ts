@@ -144,6 +144,18 @@ export class NotificationsGateway
       await client.on('ice-candidate',res=>{
         console.log(res)//
       })
+   //////////////////////////////New Logic for WEBrtc//////////////////////////////
+   await client.on('receivedCallSuccess',(res)=>{
+    if (this.socketUsers[res?.friendId]?.length > 0) {
+      this.socketUsers[res?.friendId]?.map(async id=>{
+        await this.server
+         .to(id)
+         .emit('receivedCallSuccess',res); 
+       })
+    }
+   })
+
+
       }
   }/////
   //
