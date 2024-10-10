@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import React, { Suspense, useContext, useState } from "react";
+import React, { Suspense, useCallback, useContext, useRef, useState } from "react";
 import { useEffect } from "react";
 import storeContext from "@/app/global/createContex";
 import { useSocket } from "@/app/userdashboard/global/SocketProvider";
@@ -35,11 +35,40 @@ const Page = () => {
   if (callInv === 'call-start') {
     startCall()
   }
+
+  /////////////////////////////////////logic for open window when received call////////////////////////////////////
   useEffect(() => {
+  (  async () => {
     if (action === 'call-received') {
-        socket && socket.emit('receivedCallSuccess',{friendId:fdId,msg:'call received success'})
-    }
+      await generateStream()
+      const rtc =await CreatePeearConnection()
+      console.log(rtc)
+     await socket && socket.emit('receivedCallSuccess',{friendId:fdId,msg:'call received success'})
+  }
+  })()
   }, [action,socket]);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////webRTC logic start from here/////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+const peearConnectionRef = useRef(null);
+const CreatePeearConnection = useCallback(async() => {
+  if (typeof window !== undefined) {
+    const config = {
+      iceServers: [
+        {
+          urls: [
+            "stun:stun.l.google.com:19302",
+            "stun:global.stun.twilio.com:3478",
+          ],
+        },
+      ],
+    };
+    const rtc =await new RTCPeerConnection(config)
+    peearConnectionRef.current = rtc
+    return await rtc
+  }
+}, [peearConnectionRef.current]);
+
 
   ///////////////////////////Render webRTC in here/////////////////////////////
   useEffect(() => {
@@ -51,31 +80,35 @@ const Page = () => {
     };
   }, [socket]);
  ///////////////////////////////////////////////////////////////////////////////
-
+  //////////////////////////////////////////////////////////////////////////////
+  const generateStream = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      audio:true,
+      video: {
+        width:{min:320,ideal:1280,max:1920},
+        height:{min:180,ideal:720,max:1080},
+        frameRate:{min:30, max:90}
+       }
+    });
+    //////////////////////////////////////////
+    console.log('keno keno')
+    const mike = stream?.getAudioTracks()[0]
+    mike.enabled = !mike.enabled
+    const devices = await navigator.mediaDevices.enumerateDevices()
+    setDeviceInfo(devices)
+    setLocalStram(stream)
+    return stream
+  };
+ ///////////////////////////////////////////////////////////////////////////////
  const init =async ()=>{
+  const rtc =await CreatePeearConnection()
+  console.log(rtc)
+  await generateStream()
+
    console.log("call received success")
  }
- //////////////////////////////////////////////////////////////////////////////
-  useEffect(() => {
-    const generateStream = async () => {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio:true,
-        video: {
-          width:{min:320,ideal:1280,max:1920},
-          height:{min:180,ideal:720,max:1080},
-          frameRate:{min:30, max:90}
-         }
-      });
-      //////////////////////////////////////////
-      const mike = stream?.getAudioTracks()[0]
-      mike.enabled = !mike.enabled
-      const devices = await navigator.mediaDevices.enumerateDevices()
-      setDeviceInfo(devices)
-      setLocalStram(stream)
-    };
+console.log(localStream)
 
-    generateStream();
-  }, []);
   const handleCallEnd = () => {
     setIsRemoteRing(false)
     setMyFace(false);

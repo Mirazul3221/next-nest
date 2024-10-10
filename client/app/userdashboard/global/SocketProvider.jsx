@@ -109,17 +109,17 @@ const setRemoteAns = async(ans)=>{
     })
 }
 ////////////////////get remote stream//////////////////////\par
-const handleTrackEvent = useCallback((ev)=>{
-  const streams = ev.streams; 
-  setRemoteStream(streams[0])
-},[])
+// const handleTrackEvent = useCallback((ev)=>{
+//   const streams = ev.streams; 
+//   setRemoteStream(streams[0])
+// },[])
 
-useEffect(() => {
-  peearConnectionRef.current.addEventListener('track',handleTrackEvent)
-  return () => {
-    peearConnectionRef.current.removeEventListener('track',handleTrackEvent)
-  };
-}, [peearConnectionRef.current,handleTrackEvent]);
+// useEffect(() => {
+//   peearConnectionRef.current.addEventListener('track',handleTrackEvent)
+//   return () => {
+//     peearConnectionRef.current.removeEventListener('track',handleTrackEvent)
+//   };
+// }, [peearConnectionRef.current,handleTrackEvent]);
 /////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////
   return (
