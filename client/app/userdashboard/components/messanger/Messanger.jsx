@@ -230,8 +230,8 @@ const Messanger = ({
           </div>
         </div>
         <div className="flex justify-center gap-2 text-white">
-          <EntryPoint user={{id,name,profile,title,type:'Audio'}}/>
-          <EntryPoint user={{id,name,profile,title,type:'Video'}}/>
+          <EntryPoint user={{myId:store.userInfo.id,fdId:id,name,profile,title,type:'Audio'}}/>
+          <EntryPoint user={{myId:store.userInfo.id,fdId:id,name,profile,title,type:'Video'}}/>
           <RxCross1
             onClick={() => setSwitcher(false)}
             className="cursor-pointer"

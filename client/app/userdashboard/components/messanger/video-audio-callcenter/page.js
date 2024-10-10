@@ -17,7 +17,8 @@ const Page = () => {
   const [toggleVid,setToggleVid] = useState(false)
   const [toggleMick,setToggleMick] = useState(false)
   const {store} = useContext(storeContext)
-  const id = data.get("userid");
+  const myId = data.get("my_peear");
+  const fdId = data.get("friend_peear");
   const name = data.get("name");
   const profile = data.get("profile");
   const type = data.get("type");
@@ -30,7 +31,7 @@ const Page = () => {
    const {socket,peearConnectionRef,createOffer,setRemoteAns,sendStream,iceCandidate} = useSocket()
    const startCall = async()=>{
     const offer = await createOffer()
-    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:id,name:store.userInfo.name,profile:store.userInfo.profile,type,offer})
+    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:fdId,name:store.userInfo.name,profile:store.userInfo.profile,type,offer})
    }
   if (callInv === 'call-start') {
     startCall()
@@ -72,7 +73,7 @@ const Page = () => {
     setIsRemoteRing(false)
     setMyFace(false);
     setIsRing(false)
-    socket?.emit("end-call",{id,end:'call-end'})
+    socket?.emit("end-call",{id:fdId,end:'call-end'})
     socket && socket.on('call-reached',(res)=>{
       console.log(res)
     })
@@ -81,7 +82,7 @@ const Page = () => {
   const handleCallStart = () => {
     setMyFace(true);
     setIsRing(true)
-    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:id,name:store.userInfo.name,profile:store.userInfo.profile,type})
+    socket?.emit('signal-call',{senderId:store.userInfo.id,receiverId:fdId,name:store.userInfo.name,profile:store.userInfo.profile,type})
     setCallInv('call-start')
   };
 // useEffect(() => {

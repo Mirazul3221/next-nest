@@ -1,9 +1,9 @@
 'use client'
 import React from 'react'
 const EntryPoint = ({user}) => {
-    const {id,name,profile,title,type} = user
+    const {myId,fdId,name,profile,title,type} = user
     const handleCallEntry = () => {
-        const url = `/userdashboard/components/messanger/video-audio-callcenter?userid=${encodeURIComponent(id)}&name=${encodeURIComponent(name)}&profile=${profile}&title=${title}&type=${type}&action=call-start`
+        const url = `/userdashboard/components/messanger/video-audio-callcenter?my_peear=${encodeURIComponent(myId)}&friend_peear=${encodeURIComponent(fdId)}&name=${encodeURIComponent(name)}&profile=${profile}&title=${title}&type=${type}&action=call-start`
         const config = 'width = 1440,height = 800, resizable=yes, scrollbars=yes'
         window.open(url,'_blank',config)
       }

@@ -121,7 +121,7 @@ export class NotificationsGateway
       })
 ///////////////////////////////////////////////////////////////////////////////////
       await client.on('end-call',req=>{
-        if (this.socketUsers[req?.id].length > 0) {
+        if (this.socketUsers[req?.id]?.length > 0) {
           this.socketUsers[req?.id]?.map(async id=>{
             await this.server
              .to(id)
@@ -131,7 +131,7 @@ export class NotificationsGateway
       })
       //////////////////////////////////////////////////////////////////////////
       await client.on('callStatus',req=>{
-        if (this.socketUsers[req?.id].length > 0) {
+        if (this.socketUsers[req?.id]?.length > 0) {
           this.socketUsers[req?.id]?.map(async id=>{
             await this.server
              .to(id)

@@ -80,7 +80,7 @@ const CallReceiverRoom = () => {
               Decline
             </h4>
             <h4 onClick={handleReceiveCall} className="text-white w-fit bg-green-500 px-6 rounded-md cursor-pointer" >
-               <a target='_blank' href={`/userdashboard/components/messanger/video-audio-callcenter?userid=${encodeURIComponent(data?.senderId)}&name=${encodeURIComponent(data?.name)}&profile=${data?.profile}&title=${data?.title}&type=${data?.type}&action=call-received`}> Receive Call</a>
+               <a target='_blank' href={`/userdashboard/components/messanger/video-audio-callcenter?my_peear=${encodeURIComponent(store.userInfo.id)}&friend_peear=${encodeURIComponent(data?.senderId)}&name=${encodeURIComponent(data?.name)}&profile=${data?.profile}&title=${data?.title}&type=${data?.type}&action=call-received`}> Receive Call</a>
             </h4>
         </div>
           </div>
@@ -111,7 +111,7 @@ const CallReceiverRoom = () => {
             Decline
             </h4>
             <h4 className="text-white w-fit bg-green-500 px-6 rounded-md cursor-pointer" >
-               <a target='_blank' href={`/userdashboard/components/messanger/video-audio-callcenter?userid=${encodeURIComponent(data?.senderId)}&name=${encodeURIComponent(data?.name)}&profile=${data?.profile}&title=${data?.title}&type=${data?.type}&action=call-start`}> start Call</a>
+               <a target='_blank' href={`/userdashboard/components/messanger/video-audio-callcenter?my_peear=${encodeURIComponent(store.userInfo.id)}&friend_peear=${encodeURIComponent(data?.senderId)}&name=${encodeURIComponent(data?.name)}&profile=${data?.profile}&title=${data?.title}&type=${data?.type}&action=call-start`}> start Call</a>
             </h4>
         </div>
           </div>
